@@ -32,6 +32,9 @@ jobs:
       - name: Add Android platform
         run: npx cap add android
 
+      - name: Apply logo, icons and splash screen
+        run: python3 scripts/customize-android.py
+
       - name: Sync web files into Android project
         run: npx cap sync android
 

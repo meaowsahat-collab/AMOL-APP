@@ -6,46 +6,81 @@
 <meta name="theme-color" content="#0f3d2e">
 <title>Amol</title>
 <style>
-:root{--bg:#f6f3ea;--card:#fff;--ink:#1c2a24;--mute:#5f6e66;--green:#0f3d2e;--gold:#b88a2c;--goldtxt:#8a6410;--line:#e4dfd0}
-@media (prefers-color-scheme:dark){:root{--bg:#0d1512;--card:#16211c;--ink:#e8efe9;--mute:#93a59b;--green:#1d6b50;--gold:#d9ab4a;--goldtxt:#d9ab4a;--line:#26352d}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans Bengali","Noto Sans Devanagari",sans-serif;line-height:1.65;padding-bottom:84px}
-header{background:#0f3d2e;color:#fff;padding:14px 16px;position:sticky;top:0;z-index:5;display:flex;gap:10px;align-items:center;justify-content:space-between}
-header h1{font-size:18px;margin:0}
-select{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+@font-face{font-family:'Amiri';font-weight:400;font-style:normal;font-display:swap;src:url(fonts/amiri-arabic-400-normal.woff2) format('woff2')}
+@font-face{font-family:'Amiri';font-weight:700;font-style:normal;font-display:swap;src:url(fonts/amiri-arabic-700-normal.woff2) format('woff2')}
+:root{--bg:#f6f3ea;--card:#fff;--ink:#1c2a24;--mute:#5f6e66;--green:#0f3d2e;--accent:#0f3d2e;--gold:#b88a2c;--goldtxt:#8a6410;--line:#e4dfd0;--chip:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1512;--card:#16211c;--ink:#e8efe9;--mute:#93a59b;--accent:#d9ab4a;--gold:#d9ab4a;--goldtxt:#d9ab4a;--line:#26352d;--chip:#16211c}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans Bengali","Noto Sans Devanagari",sans-serif;line-height:1.65;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+button{font:inherit;color:inherit;cursor:pointer}
+header{background:#0f3d2e;color:#fff;padding:10px 16px;position:sticky;top:0;z-index:5;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px}
+.brand svg{width:34px;height:34px;display:block}
+header h1{font-size:20px;margin:0;font-weight:700;letter-spacing:.2px}
+#lang{font:inherit;font-size:15px;min-height:40px;padding:0 10px;border-radius:20px;border:1px solid rgba(255,255,255,.45);background:transparent;color:#fff}
+#lang option{color:#1c2a24}
 main{max-width:720px;margin:0 auto;padding:14px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 14px}
-.ar{font-family:"Amiri","Noto Naskh Arabic","Traditional Arabic",serif;font-size:22px;line-height:2;direction:rtl;text-align:right;margin:0 0 10px}
-.tr{margin:0 0 10px;white-space:pre-wrap}
-.meta{font-size:13px;color:var(--mute);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}
-.tag{color:var(--goldtxt);font-weight:600}
-.note{font-size:12px;color:var(--mute);border-top:1px dashed var(--line);padding-top:8px;margin-top:8px}
-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom)}
-nav button{flex:1;border:0;background:none;color:var(--mute);padding:12px 4px;font:inherit;font-size:14px}
-nav button.on{color:var(--green);font-weight:700;border-top:3px solid var(--gold)}
-@media (prefers-color-scheme:dark){nav button.on{color:var(--gold)}}
-input[type=search]{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;margin-bottom:12px}
-.row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.row button,.btn{flex:1 1 40%;min-height:44px;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
-.row button.on{background:var(--green);color:#fff;border-color:var(--green)}
+h2.page{font-size:20px;margin:6px 0 2px}
+.sub{font-size:13px;color:var(--mute);margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:0 0 14px;box-shadow:0 1px 8px rgba(15,61,46,.05)}
+.topic{color:var(--goldtxt);font-weight:700;font-size:15px;margin:0 0 10px}
+.ar{font-family:"Amiri","Noto Naskh Arabic","Traditional Arabic",serif;font-size:21px;line-height:2.05;direction:rtl;text-align:right;margin:0 0 12px;color:var(--accent);white-space:pre-line}
+.tr{margin:0 0 12px;white-space:pre-line;font-size:16px;line-height:1.75}
+.card:not(.open) .long{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;overflow:hidden}
+.card:not(.open) .tr.long{-webkit-line-clamp:7}
+.more{border:0;background:none;padding:6px 0 10px;color:var(--goldtxt);font-weight:600;font-size:14px;min-height:36px}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding-top:10px}
+.src{font-size:12.5px;color:var(--goldtxt);font-weight:600;line-height:1.4}
+.acts{display:flex;gap:4px;flex:none}
+.ic{width:44px;height:44px;border-radius:12px;border:0;background:none;display:flex;align-items:center;justify-content:center;color:var(--mute)}
+.ic:active{background:var(--line)}
+.ic svg{width:22px;height:22px}
+.note{font-size:12px;color:var(--mute);margin-top:8px}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:6}
+nav button{flex:1;border:0;border-top:3px solid transparent;background:none;color:var(--mute);padding:8px 2px 6px;font-size:12.5px;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:60px}
+nav button svg{width:24px;height:24px}
+nav button.on{color:var(--accent);font-weight:700;border-top-color:var(--gold)}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:0 -14px 12px;padding:2px 14px 6px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;min-height:42px;padding:0 16px;border-radius:21px;border:1px solid var(--line);background:var(--chip);font-size:14.5px;white-space:nowrap}
+.chips button.on{background:#0f3d2e;color:#fff;border-color:#0f3d2e}
+@media (prefers-color-scheme:dark){.chips button.on{background:var(--gold);color:#111;border-color:var(--gold)}}
+input[type=search]{width:100%;height:48px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:16px;margin-bottom:10px}
+.info{font-size:13px;color:var(--mute);margin:0 0 10px}
+.btn{min-height:46px;padding:0 18px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:15px}
+.btn.full{width:100%;margin-bottom:12px}
+.row2{display:flex;gap:10px;margin-bottom:14px}
+.row2 .btn{flex:1}
 .tas{text-align:center}
-.tas .num{font-size:72px;font-weight:700;color:var(--green);margin:6px 0}
-@media (prefers-color-scheme:dark){.tas .num{color:var(--gold)}}
-.tapbtn{width:180px;height:180px;border-radius:50%;border:0;background:var(--green);color:#fff;font-size:20px;font-weight:600;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.dhikr{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:0 0 6px}
+.dhikr button{min-height:42px;padding:0 14px;border-radius:21px;border:1px solid var(--line);background:var(--chip);font-family:"Amiri","Noto Naskh Arabic",serif;font-size:17px}
+.dhikr button.on{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
+.tas .big{font-family:"Amiri","Noto Naskh Arabic",serif;font-size:34px;line-height:1.8;color:var(--accent);margin:4px 0 0}
+.tas .num{font-size:76px;line-height:1.15;font-weight:700;color:var(--accent)}
+.bar{height:6px;border-radius:3px;background:var(--line);margin:6px auto 4px;max-width:260px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold);width:0;transition:width .15s}
+.tapbtn{width:188px;height:188px;border-radius:50%;border:6px solid var(--gold);background:#0f3d2e;color:#fff;font-size:21px;font-weight:600;box-shadow:0 10px 24px rgba(15,61,46,.28);margin-top:12px}
 .tapbtn:active{transform:scale(.96)}
-.dhikr{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:10px 0}
-.dhikr button{min-height:40px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:13px}
-.dhikr button.on{background:var(--gold);color:#111;border-color:var(--gold)}
+.about{text-align:center}
+.about .tile{width:100px;height:100px;margin:6px auto 0;border-radius:26px;background:#0f3d2e;display:flex;align-items:center;justify-content:center}
+.about .tile svg{width:88px;height:88px}
+.about h2{margin:8px 0 2px}
+.about p{margin:8px 0;text-align:left}
+.about .small{font-size:12.5px;color:var(--mute)}
 </style>
 </head>
 <body>
-<header><h1 id="appName"></h1><select id="lang" aria-label="language"></select></header>
+<header>
+  <div class="brand" id="brand"></div>
+  <select id="lang" aria-label="language"></select>
+</header>
 <main id="view"></main>
-<nav><button data-t="today"></button><button data-t="lib"></button><button data-t="tas"></button><button data-t="about"></button></nav>
+<nav id="nav"></nav>
 
 <script>
 // Small collections (Nawawi 40, Qudsi 40, Daily deeds) load from data/hadith.json.
-// Big collections (Bukhari, Muslim) load per language from data/<book>.<lang>.json when opened.
+// Big collections load per language from data/<book>.<lang>.json when opened.
 let DATA = {};
 const BIG = {
   bukhari:{title:{en:'Sahih al-Bukhari',bn:'সহীহ বুখারি',ar:'صحيح البخاري'}},
@@ -56,25 +91,26 @@ const BIG = {
   ibnmajah:{title:{en:'Sunan Ibn Majah',bn:'সুনান ইবনে মাজাহ',ar:'سنن ابن ماجه'}},
   malik:{title:{en:'Muwatta Malik',bn:'মুয়াত্তা মালিক',ar:'موطأ مالك'}}
 };
-const PAGE = 30;
+const PAGE = 20;
+const LONG_AR = 260, LONG_TR = 380;
 
-const LANGS = {bn:['বাংলা','ltr'],en:['English','ltr'],hi:['हिन्दी','ltr'],ne:['नेपाली','ltr'],ur:['اردو','rtl'],tr:['Türkçe','ltr'],fr:['Français','ltr']};
+const LANGS = {bn:['বাংলা','ltr','bn-BD'],en:['English','ltr','en-US'],hi:['हिन्दी','ltr','hi-IN'],ne:['नेपाली','ltr','ne-NP'],ur:['اردو','rtl','ur-PK'],tr:['Türkçe','ltr','tr-TR'],fr:['Français','ltr','fr-FR']};
 
 const UI = {
- bn:{app:'আমল',today:'আজকের আমল',lib:'সংগ্রহ',tas:'তাসবিহ',about:'পরিচিতি',search:'খুঁজুন…',count:'গণনা',reset:'রিসেট',tap:'ট্যাপ করুন',ref:'সূত্র',fb:'এই ভাষায় অনুবাদ নেই, ইংরেজি দেখানো হচ্ছে।',copy:'কপি',copied:'কপি হয়েছে',none:'কিছু পাওয়া যায়নি',more:'আরও দেখান',loading:'লোড হচ্ছে…',err:'ডেটা লোড করা যায়নি',
-  aboutT:'এই অ্যাপের হাদিস ওপেন-সোর্স ডেটা থেকে নেওয়া। প্রতিটি হাদিসের সূত্র দেখানো আছে। কোনো আমল বা ফজিলতের দাবি আলেম বা নির্ভরযোগ্য হাদিস গ্রন্থ থেকে যাচাই করে নিন। অনুবাদে ভুল থাকতে পারে।'},
- en:{app:'Amol',today:"Today's Deed",lib:'Library',tas:'Tasbih',about:'About',search:'Search…',count:'Count',reset:'Reset',tap:'Tap',ref:'Source',fb:'',copy:'Copy',copied:'Copied',none:'Nothing found',more:'Show more',loading:'Loading…',err:'Could not load data',
-  aboutT:'Hadith in this app come from open-source datasets, and each shows its source. Please verify any deed or virtue claim with scholars or reliable hadith collections. Translations may contain errors.'},
- hi:{app:'अमल',today:'आज का अमल',lib:'संग्रह',tas:'तस्बीह',about:'परिचय',search:'खोजें…',count:'गिनती',reset:'रीसेट',tap:'टैप करें',ref:'संदर्भ',fb:'इस भाषा में अनुवाद उपलब्ध नहीं है, अंग्रेज़ी दिखाई जा रही है।',copy:'कॉपी',copied:'कॉपी हो गया',none:'कुछ नहीं मिला',more:'और दिखाएँ',loading:'लोड हो रहा है…',err:'डेटा लोड नहीं हो सका',
-  aboutT:'इस ऐप की हदीसें ओपन-सोर्स डेटा से ली गई हैं और हर हदीस का संदर्भ दिया गया है। किसी भी अमल या फ़ज़ीलत के दावे को आलिमों या भरोसेमंद हदीस ग्रंथों से जाँच लें। अनुवाद में गलतियाँ हो सकती हैं।'},
- ne:{app:'अमल',today:'आजको अमल',lib:'संग्रह',tas:'तस्बीह',about:'परिचय',search:'खोज्नुहोस्…',count:'गणना',reset:'रिसेट',tap:'ट्याप गर्नुहोस्',ref:'सन्दर्भ',fb:'यो भाषामा अनुवाद उपलब्ध छैन, अंग्रेजी देखाइँदैछ।',copy:'कपी',copied:'कपी भयो',none:'केही फेला परेन',more:'थप देखाउनुहोस्',loading:'लोड हुँदैछ…',err:'डेटा लोड गर्न सकिएन',
-  aboutT:'यस एपका हदीसहरू ओपन-सोर्स डेटाबाट लिइएका हुन् र प्रत्येक हदीसको सन्दर्भ देखाइएको छ। कुनै पनि अमल वा फजिलतको दाबी आलिम वा भरपर्दो हदीस ग्रन्थबाट जाँच गर्नुहोस्। अनुवादमा गल्ती हुन सक्छ।'},
- ur:{app:'عمل',today:'آج کا عمل',lib:'ذخیرہ',tas:'تسبیح',about:'تعارف',search:'تلاش…',count:'گنتی',reset:'ری سیٹ',tap:'ٹیپ کریں',ref:'حوالہ',fb:'اس زبان میں ترجمہ دستیاب نہیں، انگریزی دکھائی جا رہی ہے۔',copy:'کاپی',copied:'کاپی ہو گیا',none:'کچھ نہیں ملا',more:'مزید دکھائیں',loading:'لوڈ ہو رہا ہے…',err:'ڈیٹا لوڈ نہیں ہو سکا',
-  aboutT:'اس ایپ کی احادیث اوپن سورس ڈیٹا سے لی گئی ہیں اور ہر حدیث کا حوالہ دیا گیا ہے۔ کسی بھی عمل یا فضیلت کے دعوے کو علماء یا معتبر کتبِ حدیث سے جانچ لیں۔ ترجمے میں غلطی ہو سکتی ہے۔'},
- tr:{app:'Amel',today:'Günün Ameli',lib:'Kütüphane',tas:'Tesbih',about:'Hakkında',search:'Ara…',count:'Sayı',reset:'Sıfırla',tap:'Dokun',ref:'Kaynak',fb:'Bu dilde çeviri yok, İngilizce gösteriliyor.',copy:'Kopyala',copied:'Kopyalandı',none:'Sonuç yok',more:'Daha fazla',loading:'Yükleniyor…',err:'Veri yüklenemedi',
-  aboutT:'Bu uygulamadaki hadisler açık kaynaklı verilerden alınmıştır ve her birinin kaynağı gösterilir. Herhangi bir amel veya fazilet iddiasını âlimlerden ya da güvenilir hadis kaynaklarından doğrulayın. Çeviriler hata içerebilir.'},
- fr:{app:'Amal',today:'Action du jour',lib:'Bibliothèque',tas:'Tasbih',about:'À propos',search:'Rechercher…',count:'Compteur',reset:'Réinitialiser',tap:'Appuyer',ref:'Source',fb:'Pas de traduction dans cette langue, anglais affiché.',copy:'Copier',copied:'Copié',none:'Aucun résultat',more:'Voir plus',loading:'Chargement…',err:'Impossible de charger les données',
-  aboutT:"Les hadiths de cette application proviennent de données open source et chacun indique sa source. Vérifiez toute action ou mérite auprès de savants ou de recueils fiables. Les traductions peuvent comporter des erreurs."}
+ bn:{app:'আমল',home:'হোম',today:'আজকের হাদিস',lib:'সংগ্রহ',tas:'তাসবিহ',about:'পরিচিতি',search:'নম্বর বা শব্দ লিখে খুঁজুন…',count:'গণনা',reset:'রিসেট',tap:'ট্যাপ করুন',ref:'সূত্র',fb:'এই ভাষায় অনুবাদ নেই, ইংরেজি দেখানো হচ্ছে।',copy:'কপি',copied:'কপি হয়েছে',share:'শেয়ার',none:'কিছু পাওয়া যায়নি',more:'আরও দেখান',loading:'লোড হচ্ছে…',err:'ডেটা লোড করা যায়নি',next:'আরেকটি হাদিস',read:'আরও পড়ুন',less:'কম দেখান',aboutH:'আমল',ver:'সংস্করণ ১.১',
+  aboutT:'এই অ্যাপের হাদিস ওপেন-সোর্স ডেটা থেকে নেওয়া এবং প্রতিটি হাদিসের সূত্র দেখানো আছে। কোনো আমল বা ফজিলতের দাবি আলেম বা নির্ভরযোগ্য হাদিস গ্রন্থ থেকে যাচাই করে নিন। অনুবাদে ভুল থাকতে পারে।',aboutD:'হাদিসের ডেটা: fawazahmed0/hadith-api (ওপেন সোর্স)। আরবি ফন্ট: Amiri (SIL OFL)।'},
+ en:{app:'Amol',home:'Home',today:"Today's Hadith",lib:'Library',tas:'Tasbih',about:'About',search:'Search by number or word…',count:'Count',reset:'Reset',tap:'Tap',ref:'Source',fb:'',copy:'Copy',copied:'Copied',share:'Share',none:'Nothing found',more:'Show more',loading:'Loading…',err:'Could not load data',next:'Another hadith',read:'Read more',less:'Show less',aboutH:'Amol',ver:'Version 1.1',
+  aboutT:'Hadith in this app come from open-source datasets, and each shows its source. Please verify any deed or virtue claim with scholars or reliable hadith collections. Translations may contain errors.',aboutD:'Hadith data: fawazahmed0/hadith-api (open source). Arabic font: Amiri (SIL OFL).'},
+ hi:{app:'अमल',home:'होम',today:'आज की हदीस',lib:'संग्रह',tas:'तस्बीह',about:'परिचय',search:'नंबर या शब्द से खोजें…',count:'गिनती',reset:'रीसेट',tap:'टैप करें',ref:'संदर्भ',fb:'इस भाषा में अनुवाद उपलब्ध नहीं है, अंग्रेज़ी दिखाई जा रही है।',copy:'कॉपी',copied:'कॉपी हो गया',share:'शेयर',none:'कुछ नहीं मिला',more:'और दिखाएँ',loading:'लोड हो रहा है…',err:'डेटा लोड नहीं हो सका',next:'एक और हदीस',read:'और पढ़ें',less:'कम दिखाएँ',aboutH:'अमल',ver:'संस्करण 1.1',
+  aboutT:'इस ऐप की हदीसें ओपन-सोर्स डेटा से ली गई हैं और हर हदीस का संदर्भ दिया गया है। किसी भी अमल या फ़ज़ीलत के दावे को आलिमों या भरोसेमंद हदीस ग्रंथों से जाँच लें। अनुवाद में गलतियाँ हो सकती हैं।',aboutD:'हदीस डेटा: fawazahmed0/hadith-api (ओपन सोर्स)। अरबी फ़ॉन्ट: Amiri (SIL OFL)।'},
+ ne:{app:'अमल',home:'गृह',today:'आजको हदीस',lib:'संग्रह',tas:'तस्बीह',about:'परिचय',search:'नम्बर वा शब्दले खोज्नुहोस्…',count:'गणना',reset:'रिसेट',tap:'ट्याप गर्नुहोस्',ref:'सन्दर्भ',fb:'यो भाषामा अनुवाद उपलब्ध छैन, अंग्रेजी देखाइँदैछ।',copy:'कपी',copied:'कपी भयो',share:'सेयर',none:'केही फेला परेन',more:'थप देखाउनुहोस्',loading:'लोड हुँदैछ…',err:'डेटा लोड गर्न सकिएन',next:'अर्को हदीस',read:'थप पढ्नुहोस्',less:'कम देखाउनुहोस्',aboutH:'अमल',ver:'संस्करण 1.1',
+  aboutT:'यस एपका हदीसहरू ओपन-सोर्स डेटाबाट लिइएका हुन् र प्रत्येक हदीसको सन्दर्भ देखाइएको छ। कुनै पनि अमल वा फजिलतको दाबी आलिम वा भरपर्दो हदीस ग्रन्थबाट जाँच गर्नुहोस्। अनुवादमा गल्ती हुन सक्छ।',aboutD:'हदीस डेटा: fawazahmed0/hadith-api (ओपन सोर्स)। अरबी फन्ट: Amiri (SIL OFL)।'},
+ ur:{app:'عمل',home:'ہوم',today:'آج کی حدیث',lib:'ذخیرہ',tas:'تسبیح',about:'تعارف',search:'نمبر یا لفظ سے تلاش کریں…',count:'گنتی',reset:'ری سیٹ',tap:'ٹیپ کریں',ref:'حوالہ',fb:'اس زبان میں ترجمہ دستیاب نہیں، انگریزی دکھائی جا رہی ہے۔',copy:'کاپی',copied:'کاپی ہو گیا',share:'شیئر',none:'کچھ نہیں ملا',more:'مزید دکھائیں',loading:'لوڈ ہو رہا ہے…',err:'ڈیٹا لوڈ نہیں ہو سکا',next:'ایک اور حدیث',read:'مزید پڑھیں',less:'کم دکھائیں',aboutH:'عمل',ver:'ورژن 1.1',
+  aboutT:'اس ایپ کی احادیث اوپن سورس ڈیٹا سے لی گئی ہیں اور ہر حدیث کا حوالہ دیا گیا ہے۔ کسی بھی عمل یا فضیلت کے دعوے کو علماء یا معتبر کتبِ حدیث سے جانچ لیں۔ ترجمے میں غلطی ہو سکتی ہے۔',aboutD:'حدیث ڈیٹا: fawazahmed0/hadith-api (اوپن سورس)۔ عربی فونٹ: Amiri (SIL OFL)۔'},
+ tr:{app:'Amel',home:'Ana Sayfa',today:'Günün Hadisi',lib:'Kütüphane',tas:'Tesbih',about:'Hakkında',search:'Numara veya kelime ara…',count:'Sayı',reset:'Sıfırla',tap:'Dokun',ref:'Kaynak',fb:'Bu dilde çeviri yok, İngilizce gösteriliyor.',copy:'Kopyala',copied:'Kopyalandı',share:'Paylaş',none:'Sonuç yok',more:'Daha fazla',loading:'Yükleniyor…',err:'Veri yüklenemedi',next:'Başka bir hadis',read:'Devamını oku',less:'Daha az göster',aboutH:'Amel',ver:'Sürüm 1.1',
+  aboutT:'Bu uygulamadaki hadisler açık kaynaklı verilerden alınmıştır ve her birinin kaynağı gösterilir. Herhangi bir amel veya fazilet iddiasını âlimlerden ya da güvenilir hadis kaynaklarından doğrulayın. Çeviriler hata içerebilir.',aboutD:'Hadis verisi: fawazahmed0/hadith-api (açık kaynak). Arapça yazı tipi: Amiri (SIL OFL).'},
+ fr:{app:'Amal',home:'Accueil',today:'Hadith du jour',lib:'Bibliothèque',tas:'Tasbih',about:'À propos',search:'Rechercher par numéro ou mot…',count:'Compteur',reset:'Réinitialiser',tap:'Appuyer',ref:'Source',fb:'Pas de traduction dans cette langue, anglais affiché.',copy:'Copier',copied:'Copié',share:'Partager',none:'Aucun résultat',more:'Voir plus',loading:'Chargement…',err:'Impossible de charger les données',next:'Un autre hadith',read:'Lire la suite',less:'Réduire',aboutH:'Amal',ver:'Version 1.1',
+  aboutT:"Les hadiths de cette application proviennent de données open source et chacun indique sa source. Vérifiez toute action ou mérite auprès de savants ou de recueils fiables. Les traductions peuvent comporter des erreurs.",aboutD:'Données : fawazahmed0/hadith-api (open source). Police arabe : Amiri (SIL OFL).'}
 };
 
 const ADHKAR = [
@@ -82,10 +118,26 @@ const ADHKAR = [
  ['لَا إِلٰهَ إِلَّا اللّٰهُ',100],['أَسْتَغْفِرُ اللّٰهَ',100],['لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللّٰهِ',100]
 ];
 
+// Icons are fixed strings written here, never built from data.
+const S = 'fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+const ICON = {
+ home:`<svg viewBox="0 0 24 24" ${S}><path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/></svg>`,
+ lib:`<svg viewBox="0 0 24 24" ${S}><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/></svg>`,
+ tas:`<svg viewBox="0 0 24 24" ${S}><circle cx="12" cy="5" r="2"/><circle cx="18" cy="9.5" r="2"/><circle cx="18" cy="16" r="2"/><circle cx="12" cy="20" r="2"/><circle cx="6" cy="16" r="2"/><circle cx="6" cy="9.5" r="2"/></svg>`,
+ about:`<svg viewBox="0 0 24 24" ${S}><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>`,
+ copy:`<svg viewBox="0 0 24 24" ${S}><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>`,
+ share:`<svg viewBox="0 0 24 24" ${S}><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/></svg>`,
+ next:`<svg viewBox="0 0 24 24" ${S}><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.5"/><path d="M20 4v4.5h-4.5"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 15.5"/><path d="M4 20v-4.5h4.5"/></svg>`
+};
+const LOGO = `<svg viewBox="0 0 1024 1024" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0CE7A"/><stop offset="1" stop-color="#D9AB4A"/></linearGradient><mask id="lm"><rect width="1024" height="1024" fill="#fff"/><circle cx="562" cy="476" r="118" fill="#000"/></mask></defs><g fill="#D9AB4A" fill-opacity=".10" stroke="url(#lg)" stroke-width="30" stroke-linejoin="round"><rect x="292" y="292" width="440" height="440"/><rect x="292" y="292" width="440" height="440" transform="rotate(45 512 512)"/></g><circle cx="500" cy="520" r="140" fill="url(#lg)" mask="url(#lm)"/><polygon points="614.0,406.0 625.2,436.6 657.7,437.8 632.1,457.9 641.0,489.2 614.0,471.0 587.0,489.2 595.9,457.9 570.3,437.8 602.8,436.6" fill="url(#lg)"/></svg>`;
+
 const $ = s => document.querySelector(s);
-let lang = localStorage.getItem('lang') || 'bn';
-let tab = 'today', coll = 'nawawi', q = '', limit = PAGE, libToken = 0;
+let lang = 'bn';
+try { lang = localStorage.getItem('lang') || 'bn'; } catch (e) {}
+if (!UI[lang]) lang = 'bn';
+let tab = 'today', coll = 'nawawi', q = '', limit = PAGE, libToken = 0, todayShift = 0;
 const L = () => UI[lang];
+const store = {get:k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set:(k,v) => { try { localStorage.setItem(k,v); } catch (e) {} }};
 const titleOf = b => (DATA[b] || BIG[b]).title;
 const allCols = () => [...Object.keys(DATA), ...Object.keys(BIG)];
 const bigLang = () => (lang === 'bn' || lang === 'en') ? lang : 'en';
@@ -104,6 +156,7 @@ function el(tag, props = {}, ...kids){
   for (const c of kids) e.append(c);
   return e;
 }
+const icon = (name, label, onclick) => { const b = el('button',{class:'ic','aria-label':label}); b.innerHTML = ICON[name]; b.onclick = onclick; return b; };
 
 function pick(item){
   const t = item.t;
@@ -111,43 +164,70 @@ function pick(item){
   return {text:t.en || '', fb:true};
 }
 
+async function copyText(txt, btn){
+  try { await navigator.clipboard.writeText(txt); if (btn) { btn.setAttribute('aria-label', L().copied); btn.style.color = 'var(--goldtxt)'; setTimeout(() => { btn.style.color = ''; btn.setAttribute('aria-label', L().copy); }, 1200); } } catch (e) {}
+}
+
 function card(item, book){
   const {text, fb} = pick(item);
   const title = titleOf(book)[lang] || titleOf(book).en;
   const srcText = item.src || `${title} #${item.n}`;
+  const full = [item.t.ar || '', text, srcText].filter(Boolean).join('\n\n');
   const c = el('div',{class:'card'});
-  if (item.h) c.append(el('div',{class:'tag',style:'margin-bottom:8px'}, item.h[lang] || item.h.en));
-  if (item.t.ar) c.append(el('p',{class:'ar',lang:'ar'}, item.t.ar));
-  const p = el('p',{class:'tr'}, text);
-  if (lang==='ur') { p.dir='rtl'; p.style.textAlign='right'; }
+  if (item.h) c.append(el('div',{class:'topic'}, item.h[lang] || item.h.en));
+  const longAr = (item.t.ar || '').length > LONG_AR, longTr = text.length > LONG_TR;
+  if (item.t.ar) c.append(el('p',{class:'ar' + (longAr ? ' long' : ''), lang:'ar'}, item.t.ar));
+  const p = el('p',{class:'tr' + (longTr ? ' long' : '')}, text);
+  if (lang === 'ur') { p.dir = 'rtl'; p.style.textAlign = 'right'; }
   c.append(p);
-  const copy = el('button',{class:'btn',style:'flex:none;padding:4px 10px;min-height:40px'}, L().copy);
-  copy.onclick = async () => { try{ await navigator.clipboard.writeText((item.t.ar||'')+'\n\n'+text+'\n\n'+srcText); copy.textContent=L().copied; }catch(e){} };
-  c.append(el('div',{class:'meta'}, el('span',{class:'tag'}, `${L().ref}: ${srcText}`), copy));
+  if (longAr || longTr) {
+    const m = el('button',{class:'more'}, L().read);
+    m.onclick = () => { const open = c.classList.toggle('open'); m.textContent = open ? L().less : L().read; };
+    c.append(m);
+  }
+  const acts = el('div',{class:'acts'});
+  const cp = icon('copy', L().copy, () => copyText(full, cp));
+  acts.append(cp, icon('share', L().share, async () => {
+    if (navigator.share) { try { await navigator.share({text: full}); return; } catch (e) { if (e && e.name === 'AbortError') return; } }
+    copyText(full);
+  }));
+  c.append(el('div',{class:'foot'}, el('span',{class:'src'}, `${L().ref}: ${srcText}`), acts));
   if (fb && L().fb) c.append(el('div',{class:'note'}, L().fb));
   return c;
 }
 
+// Today: short hadith only, so the home screen never turns into a wall of text.
+function shortPool(){
+  const all = [], mine = [];   // mine = has a real translation in the chosen language
+  for (const b of Object.keys(DATA)) for (const it of DATA[b].items) {
+    const tr = pick(it).text;
+    if ((it.t.ar || '').length <= 340 && tr.length > 0 && tr.length <= 460) { all.push([b, it]); if (it.t[lang]) mine.push([b, it]); }
+  }
+  return mine.length >= 5 ? mine : all;
+}
 function viewToday(){
-  const all = [];
-  for (const b of Object.keys(DATA)) for (const it of DATA[b].items) all.push([b,it]);
+  const pool = shortPool();
   const d = new Date(); const day = Math.floor((d - new Date(d.getFullYear(),0,0))/864e5);
-  const [b,it] = all[day % all.length];
-  return [card(it,b)];
+  const [b, it] = pool[(day + todayShift) % pool.length];
+  let dateStr = '';
+  try { dateStr = d.toLocaleDateString(LANGS[lang][2], {weekday:'long', day:'numeric', month:'long', year:'numeric'}); } catch (e) { dateStr = d.toDateString(); }
+  const next = el('button',{class:'btn full'}, L().next);
+  next.onclick = () => { todayShift++; render(true); };
+  return [el('h2',{class:'page'}, L().today), el('p',{class:'sub'}, dateStr), card(it, b), next];
 }
 
 function viewLib(){
   const token = ++libToken;
-  const row = el('div',{class:'row'});
+  const row = el('div',{class:'chips'});
   for (const b of allCols()){
     const btn = el('button',{class:b===coll?'on':''}, titleOf(b)[lang] || titleOf(b).en);
     btn.onclick = () => { coll=b; limit=PAGE; render(); };
     row.append(btn);
   }
-  const s = el('input',{type:'search',placeholder:L().search,value:q});
+  const s = el('input',{type:'search',placeholder:L().search,value:q,'aria-label':L().lib});
   const list = el('div');
-  const info = el('div',{class:'meta',style:'margin-bottom:10px'});
-  const more = el('button',{class:'btn',style:'width:100%;margin-bottom:12px;display:none'}, L().more);
+  const info = el('p',{class:'info'});
+  const more = el('button',{class:'btn full',style:'display:none'}, L().more);
   more.onclick = () => { limit += PAGE; draw(); };
   s.oninput = () => { q = s.value; limit = PAGE; draw(); };
 
@@ -179,46 +259,59 @@ function viewLib(){
     more.style.display = total > limit ? 'block' : 'none';
   }
   draw();
+  requestAnimationFrame(() => { const on = row.querySelector('.on'); if (on) row.scrollLeft = on.offsetLeft - 14; });
   return [row, s, info, list, more];
 }
 
-let dIdx = +(localStorage.getItem('dIdx')||0);
+let dIdx = +(store.get('dIdx') || 0);
 function viewTas(){
   const key = 'cnt'+dIdx;
-  const n = +(localStorage.getItem(key)||0);
   const [ar,target] = ADHKAR[dIdx];
+  const n = +(store.get(key) || 0);
   const wrap = el('div',{class:'card tas'});
   const chips = el('div',{class:'dhikr'});
-  ADHKAR.forEach((a,i)=>{ const b=el('button',{class:i===dIdx?'on':''},a[0]); b.onclick=()=>{dIdx=i;localStorage.setItem('dIdx',i);render();}; chips.append(b); });
+  ADHKAR.forEach((a,i)=>{ const b=el('button',{class:i===dIdx?'on':'',lang:'ar'},a[0]); b.onclick=()=>{dIdx=i;store.set('dIdx',i);render(true);}; chips.append(b); });
   const num = el('div',{class:'num'}, String(n));
+  const fill = el('i'); const bar = el('div',{class:'bar'}, fill);
+  const setBar = v => { fill.style.width = (v % target === 0 && v > 0 ? 100 : (v % target) / target * 100) + '%'; };
+  setBar(n);
   const tap = el('button',{class:'tapbtn'}, L().tap);
-  tap.onclick = () => { const v=(+(localStorage.getItem(key)||0))+1; localStorage.setItem(key,v); num.textContent=v; if(navigator.vibrate && v%target===0) navigator.vibrate(120); };
-  const rs = el('button',{class:'btn',style:'margin-top:14px;width:140px;flex:none'}, L().reset);
-  rs.onclick = () => { localStorage.setItem(key,0); num.textContent='0'; };
-  wrap.append(chips, el('p',{class:'ar',style:'text-align:center'}, ar), el('div',{class:'meta',style:'justify-content:center'}, `${L().count} / ${target}`), num, tap, el('div',{}), rs);
+  tap.onclick = () => { const v=(+(store.get(key)||0))+1; store.set(key,v); num.textContent=v; setBar(v); if (navigator.vibrate) navigator.vibrate(v%target===0 ? 150 : 15); };
+  const rs = el('button',{class:'btn',style:'margin-top:16px;min-width:150px'}, L().reset);
+  rs.onclick = () => { store.set(key,0); num.textContent='0'; setBar(0); };
+  wrap.append(chips, el('p',{class:'big',lang:'ar'}, ar), el('div',{class:'sub',style:'margin:0'}, `${L().count} / ${target}`), num, bar, tap, el('div'), rs);
   return [wrap];
 }
 
 function viewAbout(){
-  return [el('div',{class:'card'}, el('p',{}, L().aboutT))];
+  const c = el('div',{class:'card about'});
+  const tile = el('div',{class:'tile'}); tile.innerHTML = LOGO;
+  c.append(tile, el('h2',{}, L().aboutH), el('div',{class:'small'}, L().ver), el('p',{}, L().aboutT), el('p',{class:'small'}, L().aboutD));
+  return [c];
 }
 
-function render(){
+function render(keepScroll){
   document.documentElement.lang = lang;
   document.documentElement.dir = LANGS[lang][1];
-  $('#appName').textContent = L().app;
-  document.querySelectorAll('nav button').forEach(b => { b.textContent = L()[b.dataset.t]; b.className = b.dataset.t===tab?'on':''; });
+  $('#brand').innerHTML = LOGO;
+  $('#brand').append(el('h1',{}, L().app));
+  $('#nav').replaceChildren(...[['today','home'],['lib','lib'],['tas','tas'],['about','about']].map(([t,ic]) => {
+    const b = el('button',{class:t===tab?'on':'','aria-label':L()[t === 'today' ? 'home' : t]});
+    b.innerHTML = ICON[ic]; b.append(el('span',{}, L()[t === 'today' ? 'home' : t]));
+    b.onclick = () => { if (DATA.nawawi) { tab = t; render(); } };
+    return b;
+  }));
   const v = {today:viewToday, lib:viewLib, tas:viewTas, about:viewAbout}[tab]();
   $('#view').replaceChildren(...v);
+  if (!keepScroll) window.scrollTo(0, 0);
 }
 
 const sel = $('#lang');
 for (const [c,[name]] of Object.entries(LANGS)) sel.append(el('option',{value:c}, name));
 sel.value = lang;
-sel.onchange = () => { lang = sel.value; localStorage.setItem('lang',lang); if (DATA.nawawi) render(); };
-document.querySelectorAll('nav button').forEach(b => b.onclick = () => { tab=b.dataset.t; if (DATA.nawawi) render(); });
+sel.onchange = () => { lang = sel.value; store.set('lang',lang); if (DATA.nawawi) render(true); };
 
-$('#appName').textContent = L().app;
+$('#brand').innerHTML = LOGO; $('#brand').append(el('h1',{}, L().app));
 $('#view').replaceChildren(el('div',{class:'card'}, L().loading));
 fetch('data/hadith.json').then(r => r.json()).then(d => { DATA = d; render(); })
   .catch(() => $('#view').replaceChildren(el('div',{class:'card'}, L().err)));
