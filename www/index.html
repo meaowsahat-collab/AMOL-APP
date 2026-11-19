@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f3d2e">
+<title>Amol</title>
+<style>
+:root{--bg:#f6f3ea;--card:#fff;--ink:#1c2a24;--mute:#5f6e66;--green:#0f3d2e;--gold:#b88a2c;--goldtxt:#8a6410;--line:#e4dfd0}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1512;--card:#16211c;--ink:#e8efe9;--mute:#93a59b;--green:#1d6b50;--gold:#d9ab4a;--goldtxt:#d9ab4a;--line:#26352d}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans Bengali","Noto Sans Devanagari",sans-serif;line-height:1.65;padding-bottom:84px}
+header{background:#0f3d2e;color:#fff;padding:14px 16px;position:sticky;top:0;z-index:5;display:flex;gap:10px;align-items:center;justify-content:space-between}
+header h1{font-size:18px;margin:0}
+select{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+main{max-width:720px;margin:0 auto;padding:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 14px}
+.ar{font-family:"Amiri","Noto Naskh Arabic","Traditional Arabic",serif;font-size:22px;line-height:2;direction:rtl;text-align:right;margin:0 0 10px}
+.tr{margin:0 0 10px;white-space:pre-wrap}
+.meta{font-size:13px;color:var(--mute);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}
+.tag{color:var(--goldtxt);font-weight:600}
+.note{font-size:12px;color:var(--mute);border-top:1px dashed var(--line);padding-top:8px;margin-top:8px}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;background:none;color:var(--mute);padding:12px 4px;font:inherit;font-size:14px}
+nav button.on{color:var(--green);font-weight:700;border-top:3px solid var(--gold)}
+@media (prefers-color-scheme:dark){nav button.on{color:var(--gold)}}
+input[type=search]{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;margin-bottom:12px}
+.row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.row button,.btn{flex:1 1 40%;min-height:44px;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+.row button.on{background:var(--green);color:#fff;border-color:var(--green)}
+.tas{text-align:center}
+.tas .num{font-size:72px;font-weight:700;color:var(--green);margin:6px 0}
+@media (prefers-color-scheme:dark){.tas .num{color:var(--gold)}}
+.tapbtn{width:180px;height:180px;border-radius:50%;border:0;background:var(--green);color:#fff;font-size:20px;font-weight:600;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.tapbtn:active{transform:scale(.96)}
+.dhikr{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+.dhikr button{min-height:40px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:13px}
+.dhikr button.on{background:var(--gold);color:#111;border-color:var(--gold)}
+</style>
+</head>
+<body>
+<header><h1 id="appName"></h1><select id="lang" aria-label="language"></select></header>
+<main id="view"></main>
+<nav><button data-t="today"></button><button data-t="lib"></button><button data-t="tas"></button><button data-t="about"></button></nav>
+
+<script>
+// Small collections (Nawawi 40, Qudsi 40, Daily deeds) load from data/hadith.json.
+// Big collections (Bukhari, Muslim) load per language from data/<book>.<lang>.json when opened.
+let DATA = {};
+const BIG = {
+  bukhari:{title:{en:'Sahih al-Bukhari',bn:'সহীহ বুখারি',ar:'صحيح البخاري'}},
+  muslim:{title:{en:'Sahih Muslim',bn:'সহীহ মুসলিম',ar:'صحيح مسلم'}},
+  abudawud:{title:{en:'Sunan Abi Dawud',bn:'সুনান আবু দাউদ',ar:'سنن أبي داود'}},
+  tirmidhi:{title:{en:"Jami' at-Tirmidhi",bn:'জামে আত-তিরমিযি',ar:'جامع الترمذي'}},
+  nasai:{title:{en:"Sunan an-Nasa'i",bn:'সুনান আন-নাসাঈ',ar:'سنن النسائي'}},
+  ibnmajah:{title:{en:'Sunan Ibn Majah',bn:'সুনান ইবনে মাজাহ',ar:'سنن ابن ماجه'}},
+  malik:{title:{en:'Muwatta Malik',bn:'মুয়াত্তা মালিক',ar:'موطأ مالك'}}
+};
+const PAGE = 30;
+
+const LANGS = {bn:['বাংলা','ltr'],en:['English','ltr'],hi:['हिन्दी','ltr'],ne:['नेपाली','ltr'],ur:['اردو','rtl'],tr:['Türkçe','ltr'],fr:['Français','ltr']};
+
+const UI = {
+ bn:{app:'আমল',today:'আজকের আমল',lib:'সংগ্রহ',tas:'তাসবিহ',about:'পরিচিতি',search:'খুঁজুন…',count:'গণনা',reset:'রিসেট',tap:'ট্যাপ করুন',ref:'সূত্র',fb:'এই ভাষায় অনুবাদ নেই, ইংরেজি দেখানো হচ্ছে।',copy:'কপি',copied:'কপি হয়েছে',none:'কিছু পাওয়া যায়নি',more:'আরও দেখান',loading:'লোড হচ্ছে…',err:'ডেটা লোড করা যায়নি',
+  aboutT:'এই অ্যাপের হাদিস ওপেন-সোর্স ডেটা থেকে নেওয়া। প্রতিটি হাদিসের সূত্র দেখানো আছে। কোনো আমল বা ফজিলতের দাবি আলেম বা নির্ভরযোগ্য হাদিস গ্রন্থ থেকে যাচাই করে নিন। অনুবাদে ভুল থাকতে পারে।'},
+ en:{app:'Amol',today:"Today's Deed",lib:'Library',tas:'Tasbih',about:'About',search:'Search…',count:'Count',reset:'Reset',tap:'Tap',ref:'Source',fb:'',copy:'Copy',copied:'Copied',none:'Nothing found',more:'Show more',loading:'Loading…',err:'Could not load data',
+  aboutT:'Hadith in this app come from open-source datasets, and each shows its source. Please verify any deed or virtue claim with scholars or reliable hadith collections. Translations may contain errors.'},
+ hi:{app:'अमल',today:'आज का अमल',lib:'संग्रह',tas:'तस्बीह',about:'परिचय',search:'खोजें…',count:'गिनती',reset:'रीसेट',tap:'टैप करें',ref:'संदर्भ',fb:'इस भाषा में अनुवाद उपलब्ध नहीं है, अंग्रेज़ी दिखाई जा रही है।',copy:'कॉपी',copied:'कॉपी हो गया',none:'कुछ नहीं मिला',more:'और दिखाएँ',loading:'लोड हो रहा है…',err:'डेटा लोड नहीं हो सका',
+  aboutT:'इस ऐप की हदीसें ओपन-सोर्स डेटा से ली गई हैं और हर हदीस का संदर्भ दिया गया है। किसी भी अमल या फ़ज़ीलत के दावे को आलिमों या भरोसेमंद हदीस ग्रंथों से जाँच लें। अनुवाद में गलतियाँ हो सकती हैं।'},
+ ne:{app:'अमल',today:'आजको अमल',lib:'संग्रह',tas:'तस्बीह',about:'परिचय',search:'खोज्नुहोस्…',count:'गणना',reset:'रिसेट',tap:'ट्याप गर्नुहोस्',ref:'सन्दर्भ',fb:'यो भाषामा अनुवाद उपलब्ध छैन, अंग्रेजी देखाइँदैछ।',copy:'कपी',copied:'कपी भयो',none:'केही फेला परेन',more:'थप देखाउनुहोस्',loading:'लोड हुँदैछ…',err:'डेटा लोड गर्न सकिएन',
+  aboutT:'यस एपका हदीसहरू ओपन-सोर्स डेटाबाट लिइएका हुन् र प्रत्येक हदीसको सन्दर्भ देखाइएको छ। कुनै पनि अमल वा फजिलतको दाबी आलिम वा भरपर्दो हदीस ग्रन्थबाट जाँच गर्नुहोस्। अनुवादमा गल्ती हुन सक्छ।'},
+ ur:{app:'عمل',today:'آج کا عمل',lib:'ذخیرہ',tas:'تسبیح',about:'تعارف',search:'تلاش…',count:'گنتی',reset:'ری سیٹ',tap:'ٹیپ کریں',ref:'حوالہ',fb:'اس زبان میں ترجمہ دستیاب نہیں، انگریزی دکھائی جا رہی ہے۔',copy:'کاپی',copied:'کاپی ہو گیا',none:'کچھ نہیں ملا',more:'مزید دکھائیں',loading:'لوڈ ہو رہا ہے…',err:'ڈیٹا لوڈ نہیں ہو سکا',
+  aboutT:'اس ایپ کی احادیث اوپن سورس ڈیٹا سے لی گئی ہیں اور ہر حدیث کا حوالہ دیا گیا ہے۔ کسی بھی عمل یا فضیلت کے دعوے کو علماء یا معتبر کتبِ حدیث سے جانچ لیں۔ ترجمے میں غلطی ہو سکتی ہے۔'},
+ tr:{app:'Amel',today:'Günün Ameli',lib:'Kütüphane',tas:'Tesbih',about:'Hakkında',search:'Ara…',count:'Sayı',reset:'Sıfırla',tap:'Dokun',ref:'Kaynak',fb:'Bu dilde çeviri yok, İngilizce gösteriliyor.',copy:'Kopyala',copied:'Kopyalandı',none:'Sonuç yok',more:'Daha fazla',loading:'Yükleniyor…',err:'Veri yüklenemedi',
+  aboutT:'Bu uygulamadaki hadisler açık kaynaklı verilerden alınmıştır ve her birinin kaynağı gösterilir. Herhangi bir amel veya fazilet iddiasını âlimlerden ya da güvenilir hadis kaynaklarından doğrulayın. Çeviriler hata içerebilir.'},
+ fr:{app:'Amal',today:'Action du jour',lib:'Bibliothèque',tas:'Tasbih',about:'À propos',search:'Rechercher…',count:'Compteur',reset:'Réinitialiser',tap:'Appuyer',ref:'Source',fb:'Pas de traduction dans cette langue, anglais affiché.',copy:'Copier',copied:'Copié',none:'Aucun résultat',more:'Voir plus',loading:'Chargement…',err:'Impossible de charger les données',
+  aboutT:"Les hadiths de cette application proviennent de données open source et chacun indique sa source. Vérifiez toute action ou mérite auprès de savants ou de recueils fiables. Les traductions peuvent comporter des erreurs."}
+};
+
+const ADHKAR = [
+ ['سُبْحَانَ اللّٰهِ',33],['الْحَمْدُ لِلّٰهِ',33],['اللّٰهُ أَكْبَرُ',34],
+ ['لَا إِلٰهَ إِلَّا اللّٰهُ',100],['أَسْتَغْفِرُ اللّٰهَ',100],['لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللّٰهِ',100]
+];
+
+const $ = s => document.querySelector(s);
+let lang = localStorage.getItem('lang') || 'bn';
+let tab = 'today', coll = 'nawawi', q = '', limit = PAGE, libToken = 0;
+const L = () => UI[lang];
+const titleOf = b => (DATA[b] || BIG[b]).title;
+const allCols = () => [...Object.keys(DATA), ...Object.keys(BIG)];
+const bigLang = () => (lang === 'bn' || lang === 'en') ? lang : 'en';
+const normAr = s => s.replace(/[ً-ٰٟـ]/g, '').replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي');
+
+const packs = {}, normCache = {};
+function pack(book, l){
+  const k = book + '.' + l;
+  if (!packs[k]) packs[k] = fetch(`data/${k}.json`).then(r => { if (!r.ok) throw new Error(k); return r.json(); }).catch(e => { delete packs[k]; throw e; });
+  return packs[k];
+}
+
+function el(tag, props = {}, ...kids){
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(props)) { if (k==='class') e.className=v; else if (k.startsWith('on')) e[k]=v; else e.setAttribute(k,v); }
+  for (const c of kids) e.append(c);
+  return e;
+}
+
+function pick(item){
+  const t = item.t;
+  if (t[lang]) return {text:t[lang], fb:false};
+  return {text:t.en || '', fb:true};
+}
+
+function card(item, book){
+  const {text, fb} = pick(item);
+  const title = titleOf(book)[lang] || titleOf(book).en;
+  const srcText = item.src || `${title} #${item.n}`;
+  const c = el('div',{class:'card'});
+  if (item.h) c.append(el('div',{class:'tag',style:'margin-bottom:8px'}, item.h[lang] || item.h.en));
+  if (item.t.ar) c.append(el('p',{class:'ar',lang:'ar'}, item.t.ar));
+  const p = el('p',{class:'tr'}, text);
+  if (lang==='ur') { p.dir='rtl'; p.style.textAlign='right'; }
+  c.append(p);
+  const copy = el('button',{class:'btn',style:'flex:none;padding:4px 10px;min-height:40px'}, L().copy);
+  copy.onclick = async () => { try{ await navigator.clipboard.writeText((item.t.ar||'')+'\n\n'+text+'\n\n'+srcText); copy.textContent=L().copied; }catch(e){} };
+  c.append(el('div',{class:'meta'}, el('span',{class:'tag'}, `${L().ref}: ${srcText}`), copy));
+  if (fb && L().fb) c.append(el('div',{class:'note'}, L().fb));
+  return c;
+}
+
+function viewToday(){
+  const all = [];
+  for (const b of Object.keys(DATA)) for (const it of DATA[b].items) all.push([b,it]);
+  const d = new Date(); const day = Math.floor((d - new Date(d.getFullYear(),0,0))/864e5);
+  const [b,it] = all[day % all.length];
+  return [card(it,b)];
+}
+
+function viewLib(){
+  const token = ++libToken;
+  const row = el('div',{class:'row'});
+  for (const b of allCols()){
+    const btn = el('button',{class:b===coll?'on':''}, titleOf(b)[lang] || titleOf(b).en);
+    btn.onclick = () => { coll=b; limit=PAGE; render(); };
+    row.append(btn);
+  }
+  const s = el('input',{type:'search',placeholder:L().search,value:q});
+  const list = el('div');
+  const info = el('div',{class:'meta',style:'margin-bottom:10px'});
+  const more = el('button',{class:'btn',style:'width:100%;margin-bottom:12px;display:none'}, L().more);
+  more.onclick = () => { limit += PAGE; draw(); };
+  s.oninput = () => { q = s.value; limit = PAGE; draw(); };
+
+  async function draw(){
+    const needle = q.trim().toLowerCase();
+    let cards, total;
+    if (BIG[coll]) {
+      list.replaceChildren(el('div',{class:'card'}, L().loading));
+      let ar, tr, en; const bl = bigLang();
+      try { [ar, tr, en] = await Promise.all([pack(coll,'ar'), pack(coll,bl), pack(coll,'en')]); }
+      catch(e){ if (token===libToken){ list.replaceChildren(el('div',{class:'card'}, L().err)); more.style.display='none'; } return; }
+      if (token !== libToken) return;
+      const keys = Object.keys(ar).sort((a,b) => parseFloat(a)-parseFloat(b));
+      let hits = keys;
+      if (needle) {
+        const nAr = normAr(needle);
+        if (!normCache[coll]) normCache[coll] = {};
+        hits = keys.filter(k => k === needle || (normCache[coll][k] ??= normAr(ar[k])).includes(nAr) || (tr[k]||'').toLowerCase().includes(needle));
+      }
+      total = hits.length;
+      cards = hits.slice(0, limit).map(k => { const t = {ar:ar[k]}; if (en[k]) t.en = en[k]; if (tr[k]) t[bl] = tr[k]; return card({n:k, t, src:`${titleOf(coll).en} #${k}`}, coll); });
+    } else {
+      const r = DATA[coll].items.filter(it => !needle || String(it.n)===needle || (it.h && Object.values(it.h).some(x => x.toLowerCase().includes(needle))) || Object.values(it.t).some(t => t.toLowerCase().includes(needle)));
+      total = r.length;
+      cards = r.slice(0, limit).map(it => card(it, coll));
+    }
+    list.replaceChildren(...(cards.length ? cards : [el('div',{class:'card'}, L().none)]));
+    info.textContent = total ? `${Math.min(limit,total)} / ${total}` : '';
+    more.style.display = total > limit ? 'block' : 'none';
+  }
+  draw();
+  return [row, s, info, list, more];
+}
+
+let dIdx = +(localStorage.getItem('dIdx')||0);
+function viewTas(){
+  const key = 'cnt'+dIdx;
+  const n = +(localStorage.getItem(key)||0);
+  const [ar,target] = ADHKAR[dIdx];
+  const wrap = el('div',{class:'card tas'});
+  const chips = el('div',{class:'dhikr'});
+  ADHKAR.forEach((a,i)=>{ const b=el('button',{class:i===dIdx?'on':''},a[0]); b.onclick=()=>{dIdx=i;localStorage.setItem('dIdx',i);render();}; chips.append(b); });
+  const num = el('div',{class:'num'}, String(n));
+  const tap = el('button',{class:'tapbtn'}, L().tap);
+  tap.onclick = () => { const v=(+(localStorage.getItem(key)||0))+1; localStorage.setItem(key,v); num.textContent=v; if(navigator.vibrate && v%target===0) navigator.vibrate(120); };
+  const rs = el('button',{class:'btn',style:'margin-top:14px;width:140px;flex:none'}, L().reset);
+  rs.onclick = () => { localStorage.setItem(key,0); num.textContent='0'; };
+  wrap.append(chips, el('p',{class:'ar',style:'text-align:center'}, ar), el('div',{class:'meta',style:'justify-content:center'}, `${L().count} / ${target}`), num, tap, el('div',{}), rs);
+  return [wrap];
+}
+
+function viewAbout(){
+  return [el('div',{class:'card'}, el('p',{}, L().aboutT))];
+}
+
+function render(){
+  document.documentElement.lang = lang;
+  document.documentElement.dir = LANGS[lang][1];
+  $('#appName').textContent = L().app;
+  document.querySelectorAll('nav button').forEach(b => { b.textContent = L()[b.dataset.t]; b.className = b.dataset.t===tab?'on':''; });
+  const v = {today:viewToday, lib:viewLib, tas:viewTas, about:viewAbout}[tab]();
+  $('#view').replaceChildren(...v);
+}
+
+const sel = $('#lang');
+for (const [c,[name]] of Object.entries(LANGS)) sel.append(el('option',{value:c}, name));
+sel.value = lang;
+sel.onchange = () => { lang = sel.value; localStorage.setItem('lang',lang); if (DATA.nawawi) render(); };
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => { tab=b.dataset.t; if (DATA.nawawi) render(); });
+
+$('#appName').textContent = L().app;
+$('#view').replaceChildren(el('div',{class:'card'}, L().loading));
+fetch('data/hadith.json').then(r => r.json()).then(d => { DATA = d; render(); })
+  .catch(() => $('#view').replaceChildren(el('div',{class:'card'}, L().err)));
+</script>
+</body>
+</html>

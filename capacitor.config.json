@@ -1,0 +1,8 @@
+{
+  "appId": "com.amolapp.islamic",
+  "appName": "Amol",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false
+  }
+}
