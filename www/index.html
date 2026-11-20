@@ -71,6 +71,25 @@ input[type=search]{width:100%;height:48px;padding:0 14px;border-radius:12px;bord
 .listen{display:flex;width:max-content;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--line);background:var(--chip);color:var(--accent);font-size:14px;font-weight:600;margin:0 0 8px}
 .listen svg{width:20px;height:20px;flex:none}
 .listen.on{background:var(--gold);color:#111;border-color:var(--gold)}
+.row{display:flex;align-items:center;gap:12px;width:100%;text-align:start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:0 0 10px;box-shadow:0 1px 8px rgba(15,61,46,.05)}
+.row:active{background:var(--line)}
+.badge{flex:none;min-width:44px;height:44px;padding:0 6px;border-radius:14px;background:#0f3d2e;color:#f0ce7a;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+.rbody{flex:1;min-width:0}
+.rsrc{font-size:12.5px;color:var(--goldtxt);font-weight:600;line-height:1.4;margin:0 0 2px}
+.rprev{margin:0;font-size:15px;line-height:1.55;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;word-break:break-word}
+.chev{flex:none;width:20px;height:20px;color:var(--mute)}
+[dir=rtl] .chev{transform:scaleX(-1)}
+.backbar{display:flex;align-items:center;gap:6px;margin:0 0 12px}
+.backbtn{display:flex;align-items:center;gap:6px;min-height:44px;padding:0 14px 0 8px;border-radius:22px;border:1px solid var(--line);background:var(--card);font-weight:600;font-size:15px;color:var(--accent)}
+.backbtn svg{width:22px;height:22px}
+[dir=rtl] .backbtn svg{transform:scaleX(-1)}
+.vbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 8px}
+.vbar .listen{margin:0}
+.seg{display:flex;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--chip)}
+.seg button{border:0;background:none;min-height:40px;padding:0 14px;font-size:14px;color:var(--mute)}
+.seg button.on{background:#0f3d2e;color:#fff;font-weight:700}
+@media (prefers-color-scheme:dark){.seg button.on{background:var(--gold);color:#111}}
+.tas .vbar{justify-content:center}
 .toast{display:none;position:fixed;left:16px;right:16px;bottom:calc(76px + env(safe-area-inset-bottom));background:#1c2a24;color:#fff;padding:12px 14px;border-radius:12px;font-size:14px;line-height:1.5;z-index:20;box-shadow:0 6px 20px rgba(0,0,0,.3)}
 </style>
 </head>
@@ -101,30 +120,30 @@ const LONG_AR = 260, LONG_TR = 380;
 const LANGS = {bn:['বাংলা','ltr','bn-BD'],en:['English','ltr','en-US'],hi:['हिन्दी','ltr','hi-IN'],ne:['नेपाली','ltr','ne-NP'],ur:['اردو','rtl','ur-PK'],tr:['Türkçe','ltr','tr-TR'],fr:['Français','ltr','fr-FR']};
 
 const UI = {
- bn:{app:'আমল',home:'হোম',today:'আজকের হাদিস',lib:'সংগ্রহ',tas:'তাসবিহ',about:'পরিচিতি',search:'নম্বর বা শব্দ লিখে খুঁজুন…',count:'গণনা',reset:'রিসেট',tap:'ট্যাপ করুন',ref:'সূত্র',fb:'এই ভাষায় অনুবাদ নেই, ইংরেজি দেখানো হচ্ছে।',copy:'কপি',copied:'কপি হয়েছে',share:'শেয়ার',none:'কিছু পাওয়া যায়নি',more:'আরও দেখান',loading:'লোড হচ্ছে…',err:'ডেটা লোড করা যায়নি',next:'আরেকটি হাদিস',read:'আরও পড়ুন',less:'কম দেখান',aboutH:'আমল',ver:'সংস্করণ ১.১',
+ bn:{app:'আমল',home:'হোম',today:'আজকের হাদিস',lib:'সংগ্রহ',tas:'তাসবিহ',about:'পরিচিতি',search:'নম্বর বা শব্দ লিখে খুঁজুন…',count:'গণনা',reset:'রিসেট',tap:'ট্যাপ করুন',ref:'সূত্র',fb:'এই ভাষায় অনুবাদ নেই, ইংরেজি দেখানো হচ্ছে।',copy:'কপি',copied:'কপি হয়েছে',share:'শেয়ার',none:'কিছু পাওয়া যায়নি',more:'আরও দেখান',loading:'লোড হচ্ছে…',err:'ডেটা লোড করা যায়নি',next:'আরেকটি হাদিস',read:'আরও পড়ুন',less:'কম দেখান',aboutH:'আমল',ver:'সংস্করণ ১.২',
   aboutT:'এই অ্যাপের হাদিস ওপেন-সোর্স ডেটা থেকে নেওয়া এবং প্রতিটি হাদিসের সূত্র দেখানো আছে। কোনো আমল বা ফজিলতের দাবি আলেম বা নির্ভরযোগ্য হাদিস গ্রন্থ থেকে যাচাই করে নিন। অনুবাদে ভুল থাকতে পারে।',aboutD:'হাদিসের ডেটা: fawazahmed0/hadith-api (ওপেন সোর্স)। আরবি ফন্ট: Amiri (SIL OFL)।'},
- en:{app:'Amol',home:'Home',today:"Today's Hadith",lib:'Library',tas:'Tasbih',about:'About',search:'Search by number or word…',count:'Count',reset:'Reset',tap:'Tap',ref:'Source',fb:'',copy:'Copy',copied:'Copied',share:'Share',none:'Nothing found',more:'Show more',loading:'Loading…',err:'Could not load data',next:'Another hadith',read:'Read more',less:'Show less',aboutH:'Amol',ver:'Version 1.1',
+ en:{app:'Amol',home:'Home',today:"Today's Hadith",lib:'Library',tas:'Tasbih',about:'About',search:'Search by number or word…',count:'Count',reset:'Reset',tap:'Tap',ref:'Source',fb:'',copy:'Copy',copied:'Copied',share:'Share',none:'Nothing found',more:'Show more',loading:'Loading…',err:'Could not load data',next:'Another hadith',read:'Read more',less:'Show less',aboutH:'Amol',ver:'Version 1.2',
   aboutT:'Hadith in this app come from open-source datasets, and each shows its source. Please verify any deed or virtue claim with scholars or reliable hadith collections. Translations may contain errors.',aboutD:'Hadith data: fawazahmed0/hadith-api (open source). Arabic font: Amiri (SIL OFL).'},
- hi:{app:'अमल',home:'होम',today:'आज की हदीस',lib:'संग्रह',tas:'तस्बीह',about:'परिचय',search:'नंबर या शब्द से खोजें…',count:'गिनती',reset:'रीसेट',tap:'टैप करें',ref:'संदर्भ',fb:'इस भाषा में अनुवाद उपलब्ध नहीं है, अंग्रेज़ी दिखाई जा रही है।',copy:'कॉपी',copied:'कॉपी हो गया',share:'शेयर',none:'कुछ नहीं मिला',more:'और दिखाएँ',loading:'लोड हो रहा है…',err:'डेटा लोड नहीं हो सका',next:'एक और हदीस',read:'और पढ़ें',less:'कम दिखाएँ',aboutH:'अमल',ver:'संस्करण 1.1',
+ hi:{app:'अमल',home:'होम',today:'आज की हदीस',lib:'संग्रह',tas:'तस्बीह',about:'परिचय',search:'नंबर या शब्द से खोजें…',count:'गिनती',reset:'रीसेट',tap:'टैप करें',ref:'संदर्भ',fb:'इस भाषा में अनुवाद उपलब्ध नहीं है, अंग्रेज़ी दिखाई जा रही है।',copy:'कॉपी',copied:'कॉपी हो गया',share:'शेयर',none:'कुछ नहीं मिला',more:'और दिखाएँ',loading:'लोड हो रहा है…',err:'डेटा लोड नहीं हो सका',next:'एक और हदीस',read:'और पढ़ें',less:'कम दिखाएँ',aboutH:'अमल',ver:'संस्करण 1.2',
   aboutT:'इस ऐप की हदीसें ओपन-सोर्स डेटा से ली गई हैं और हर हदीस का संदर्भ दिया गया है। किसी भी अमल या फ़ज़ीलत के दावे को आलिमों या भरोसेमंद हदीस ग्रंथों से जाँच लें। अनुवाद में गलतियाँ हो सकती हैं।',aboutD:'हदीस डेटा: fawazahmed0/hadith-api (ओपन सोर्स)। अरबी फ़ॉन्ट: Amiri (SIL OFL)।'},
- ne:{app:'अमल',home:'गृह',today:'आजको हदीस',lib:'संग्रह',tas:'तस्बीह',about:'परिचय',search:'नम्बर वा शब्दले खोज्नुहोस्…',count:'गणना',reset:'रिसेट',tap:'ट्याप गर्नुहोस्',ref:'सन्दर्भ',fb:'यो भाषामा अनुवाद उपलब्ध छैन, अंग्रेजी देखाइँदैछ।',copy:'कपी',copied:'कपी भयो',share:'सेयर',none:'केही फेला परेन',more:'थप देखाउनुहोस्',loading:'लोड हुँदैछ…',err:'डेटा लोड गर्न सकिएन',next:'अर्को हदीस',read:'थप पढ्नुहोस्',less:'कम देखाउनुहोस्',aboutH:'अमल',ver:'संस्करण 1.1',
+ ne:{app:'अमल',home:'गृह',today:'आजको हदीस',lib:'संग्रह',tas:'तस्बीह',about:'परिचय',search:'नम्बर वा शब्दले खोज्नुहोस्…',count:'गणना',reset:'रिसेट',tap:'ट्याप गर्नुहोस्',ref:'सन्दर्भ',fb:'यो भाषामा अनुवाद उपलब्ध छैन, अंग्रेजी देखाइँदैछ।',copy:'कपी',copied:'कपी भयो',share:'सेयर',none:'केही फेला परेन',more:'थप देखाउनुहोस्',loading:'लोड हुँदैछ…',err:'डेटा लोड गर्न सकिएन',next:'अर्को हदीस',read:'थप पढ्नुहोस्',less:'कम देखाउनुहोस्',aboutH:'अमल',ver:'संस्करण 1.2',
   aboutT:'यस एपका हदीसहरू ओपन-सोर्स डेटाबाट लिइएका हुन् र प्रत्येक हदीसको सन्दर्भ देखाइएको छ। कुनै पनि अमल वा फजिलतको दाबी आलिम वा भरपर्दो हदीस ग्रन्थबाट जाँच गर्नुहोस्। अनुवादमा गल्ती हुन सक्छ।',aboutD:'हदीस डेटा: fawazahmed0/hadith-api (ओपन सोर्स)। अरबी फन्ट: Amiri (SIL OFL)।'},
- ur:{app:'عمل',home:'ہوم',today:'آج کی حدیث',lib:'ذخیرہ',tas:'تسبیح',about:'تعارف',search:'نمبر یا لفظ سے تلاش کریں…',count:'گنتی',reset:'ری سیٹ',tap:'ٹیپ کریں',ref:'حوالہ',fb:'اس زبان میں ترجمہ دستیاب نہیں، انگریزی دکھائی جا رہی ہے۔',copy:'کاپی',copied:'کاپی ہو گیا',share:'شیئر',none:'کچھ نہیں ملا',more:'مزید دکھائیں',loading:'لوڈ ہو رہا ہے…',err:'ڈیٹا لوڈ نہیں ہو سکا',next:'ایک اور حدیث',read:'مزید پڑھیں',less:'کم دکھائیں',aboutH:'عمل',ver:'ورژن 1.1',
+ ur:{app:'عمل',home:'ہوم',today:'آج کی حدیث',lib:'ذخیرہ',tas:'تسبیح',about:'تعارف',search:'نمبر یا لفظ سے تلاش کریں…',count:'گنتی',reset:'ری سیٹ',tap:'ٹیپ کریں',ref:'حوالہ',fb:'اس زبان میں ترجمہ دستیاب نہیں، انگریزی دکھائی جا رہی ہے۔',copy:'کاپی',copied:'کاپی ہو گیا',share:'شیئر',none:'کچھ نہیں ملا',more:'مزید دکھائیں',loading:'لوڈ ہو رہا ہے…',err:'ڈیٹا لوڈ نہیں ہو سکا',next:'ایک اور حدیث',read:'مزید پڑھیں',less:'کم دکھائیں',aboutH:'عمل',ver:'ورژن 1.2',
   aboutT:'اس ایپ کی احادیث اوپن سورس ڈیٹا سے لی گئی ہیں اور ہر حدیث کا حوالہ دیا گیا ہے۔ کسی بھی عمل یا فضیلت کے دعوے کو علماء یا معتبر کتبِ حدیث سے جانچ لیں۔ ترجمے میں غلطی ہو سکتی ہے۔',aboutD:'حدیث ڈیٹا: fawazahmed0/hadith-api (اوپن سورس)۔ عربی فونٹ: Amiri (SIL OFL)۔'},
- tr:{app:'Amel',home:'Ana Sayfa',today:'Günün Hadisi',lib:'Kütüphane',tas:'Tesbih',about:'Hakkında',search:'Numara veya kelime ara…',count:'Sayı',reset:'Sıfırla',tap:'Dokun',ref:'Kaynak',fb:'Bu dilde çeviri yok, İngilizce gösteriliyor.',copy:'Kopyala',copied:'Kopyalandı',share:'Paylaş',none:'Sonuç yok',more:'Daha fazla',loading:'Yükleniyor…',err:'Veri yüklenemedi',next:'Başka bir hadis',read:'Devamını oku',less:'Daha az göster',aboutH:'Amel',ver:'Sürüm 1.1',
+ tr:{app:'Amel',home:'Ana Sayfa',today:'Günün Hadisi',lib:'Kütüphane',tas:'Tesbih',about:'Hakkında',search:'Numara veya kelime ara…',count:'Sayı',reset:'Sıfırla',tap:'Dokun',ref:'Kaynak',fb:'Bu dilde çeviri yok, İngilizce gösteriliyor.',copy:'Kopyala',copied:'Kopyalandı',share:'Paylaş',none:'Sonuç yok',more:'Daha fazla',loading:'Yükleniyor…',err:'Veri yüklenemedi',next:'Başka bir hadis',read:'Devamını oku',less:'Daha az göster',aboutH:'Amel',ver:'Sürüm 1.2',
   aboutT:'Bu uygulamadaki hadisler açık kaynaklı verilerden alınmıştır ve her birinin kaynağı gösterilir. Herhangi bir amel veya fazilet iddiasını âlimlerden ya da güvenilir hadis kaynaklarından doğrulayın. Çeviriler hata içerebilir.',aboutD:'Hadis verisi: fawazahmed0/hadith-api (açık kaynak). Arapça yazı tipi: Amiri (SIL OFL).'},
- fr:{app:'Amal',home:'Accueil',today:'Hadith du jour',lib:'Bibliothèque',tas:'Tasbih',about:'À propos',search:'Rechercher par numéro ou mot…',count:'Compteur',reset:'Réinitialiser',tap:'Appuyer',ref:'Source',fb:'Pas de traduction dans cette langue, anglais affiché.',copy:'Copier',copied:'Copié',share:'Partager',none:'Aucun résultat',more:'Voir plus',loading:'Chargement…',err:'Impossible de charger les données',next:'Un autre hadith',read:'Lire la suite',less:'Réduire',aboutH:'Amal',ver:'Version 1.1',
+ fr:{app:'Amal',home:'Accueil',today:'Hadith du jour',lib:'Bibliothèque',tas:'Tasbih',about:'À propos',search:'Rechercher par numéro ou mot…',count:'Compteur',reset:'Réinitialiser',tap:'Appuyer',ref:'Source',fb:'Pas de traduction dans cette langue, anglais affiché.',copy:'Copier',copied:'Copié',share:'Partager',none:'Aucun résultat',more:'Voir plus',loading:'Chargement…',err:'Impossible de charger les données',next:'Un autre hadith',read:'Lire la suite',less:'Réduire',aboutH:'Amal',ver:'Version 1.2',
   aboutT:"Les hadiths de cette application proviennent de données open source et chacun indique sa source. Vérifiez toute action ou mérite auprès de savants ou de recueils fiables. Les traductions peuvent comporter des erreurs.",aboutD:'Données : fawazahmed0/hadith-api (open source). Police arabe : Amiri (SIL OFL).'}
 };
 
 const UX = {
- bn:{listen:'শুনুন',stop:'থামান',noVoice:'আপনার ফোনে আরবি ভয়েস নেই। ফোনের সেটিংস › ভাষা ও ইনপুট › টেক্সট-টু-স্পিচ থেকে আরবি ভয়েস ডাউনলোড করুন।',daily:'প্রতিদিন নতুন ৬টি হাদিস'},
- en:{listen:'Listen',stop:'Stop',noVoice:'No Arabic voice found on this phone. Install one in Settings › Language & input › Text-to-speech.',daily:'6 new hadith every day'},
- hi:{listen:'सुनें',stop:'रोकें',noVoice:'आपके फ़ोन में अरबी आवाज़ नहीं है। सेटिंग्स › भाषा और इनपुट › टेक्स्ट-टू-स्पीच से अरबी आवाज़ डाउनलोड करें।',daily:'हर दिन 6 नई हदीस'},
- ne:{listen:'सुन्नुहोस्',stop:'रोक्नुहोस्',noVoice:'तपाईंको फोनमा अरबी आवाज छैन। सेटिङ › भाषा र इनपुट › टेक्स्ट-टु-स्पिचबाट अरबी आवाज डाउनलोड गर्नुहोस्।',daily:'हरेक दिन ६ नयाँ हदीस'},
- ur:{listen:'سنیں',stop:'روکیں',noVoice:'آپ کے فون میں عربی آواز موجود نہیں۔ سیٹنگز › زبان اور ان پٹ › ٹیکسٹ ٹو اسپیچ سے عربی آواز ڈاؤن لوڈ کریں۔',daily:'ہر روز 6 نئی احادیث'},
- tr:{listen:'Dinle',stop:'Durdur',noVoice:'Telefonunuzda Arapça ses yok. Ayarlar › Dil ve giriş › Metin okuma bölümünden Arapça ses indirin.',daily:'Her gün 6 yeni hadis'},
- fr:{listen:'Écouter',stop:'Arrêter',noVoice:'Aucune voix arabe sur ce téléphone. Installez-en une dans Paramètres › Langue et saisie › Synthèse vocale.',daily:'6 nouveaux hadiths chaque jour'}
+ bn:{male:'পুরুষ',female:'নারী',back:'পিছনে',listen:'শুনুন',stop:'থামান',noVoice:'আপনার ফোনে আরবি ভয়েস নেই। ফোনের সেটিংস › ভাষা ও ইনপুট › টেক্সট-টু-স্পিচ থেকে আরবি ভয়েস ডাউনলোড করুন।',daily:'প্রতিদিন নতুন ৬টি হাদিস'},
+ en:{male:'Male',female:'Female',back:'Back',listen:'Listen',stop:'Stop',noVoice:'No Arabic voice found on this phone. Install one in Settings › Language & input › Text-to-speech.',daily:'6 new hadith every day'},
+ hi:{male:'पुरुष',female:'महिला',back:'वापस',listen:'सुनें',stop:'रोकें',noVoice:'आपके फ़ोन में अरबी आवाज़ नहीं है। सेटिंग्स › भाषा और इनपुट › टेक्स्ट-टू-स्पीच से अरबी आवाज़ डाउनलोड करें।',daily:'हर दिन 6 नई हदीस'},
+ ne:{male:'पुरुष',female:'महिला',back:'पछाडि',listen:'सुन्नुहोस्',stop:'रोक्नुहोस्',noVoice:'तपाईंको फोनमा अरबी आवाज छैन। सेटिङ › भाषा र इनपुट › टेक्स्ट-टु-स्पिचबाट अरबी आवाज डाउनलोड गर्नुहोस्।',daily:'हरेक दिन ६ नयाँ हदीस'},
+ ur:{male:'مرد',female:'عورت',back:'واپس',listen:'سنیں',stop:'روکیں',noVoice:'آپ کے فون میں عربی آواز موجود نہیں۔ سیٹنگز › زبان اور ان پٹ › ٹیکسٹ ٹو اسپیچ سے عربی آواز ڈاؤن لوڈ کریں۔',daily:'ہر روز 6 نئی احادیث'},
+ tr:{male:'Erkek',female:'Kadın',back:'Geri',listen:'Dinle',stop:'Durdur',noVoice:'Telefonunuzda Arapça ses yok. Ayarlar › Dil ve giriş › Metin okuma bölümünden Arapça ses indirin.',daily:'Her gün 6 yeni hadis'},
+ fr:{male:'Homme',female:'Femme',back:'Retour',listen:'Écouter',stop:'Arrêter',noVoice:'Aucune voix arabe sur ce téléphone. Installez-en une dans Paramètres › Langue et saisie › Synthèse vocale.',daily:'6 nouveaux hadiths chaque jour'}
 };
 for (const l of Object.keys(UX)) Object.assign(UI[l], UX[l]);
 
@@ -145,6 +164,8 @@ const ICON = {
  next:`<svg viewBox="0 0 24 24" ${S}><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.5"/><path d="M20 4v4.5h-4.5"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 15.5"/><path d="M4 20v-4.5h4.5"/></svg>`
 };
 ICON.play = `<svg viewBox="0 0 24 24" ${S}><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>`;
+ICON.back = `<svg viewBox="0 0 24 24" ${S}><path d="M15 5l-7 7 7 7"/></svg>`;
+ICON.chev = `<svg class="chev" viewBox="0 0 24 24" ${S}><path d="M9 5l7 7-7 7"/></svg>`;
 ICON.stop = `<svg viewBox="0 0 24 24" ${S}><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg>`;
 const LOGO = `<svg viewBox="0 0 1024 1024" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0CE7A"/><stop offset="1" stop-color="#D9AB4A"/></linearGradient><mask id="lm"><rect width="1024" height="1024" fill="#fff"/><circle cx="562" cy="476" r="118" fill="#000"/></mask></defs><g fill="#D9AB4A" fill-opacity=".10" stroke="url(#lg)" stroke-width="30" stroke-linejoin="round"><rect x="292" y="292" width="440" height="440"/><rect x="292" y="292" width="440" height="440" transform="rotate(45 512 512)"/></g><circle cx="500" cy="520" r="140" fill="url(#lg)" mask="url(#lm)"/><polygon points="614.0,406.0 625.2,436.6 657.7,437.8 632.1,457.9 641.0,489.2 614.0,471.0 587.0,489.2 595.9,457.9 570.3,437.8 602.8,436.6" fill="url(#lg)"/></svg>`;
 
@@ -205,7 +226,7 @@ const TTS = (() => {
   };
   // Android limits one utterance to about 4000 characters, so read sentence by sentence.
   function chunks(text){
-    const clean = text.replace(/[‎‏]/g, '').replace(/\s+/g, ' ').trim();
+    const clean = text.replace(/[‎‏"«»“”()\[\]{}…]/g, ' ').replace(/ـ/g, '').replace(/\s+/g, ' ').trim();
     const parts = clean.split(/(?<=[،؛.؟!:])\s+/), out = [];
     let acc = '';
     for (const p of parts) {
@@ -214,6 +235,19 @@ const TTS = (() => {
     if (acc) out.push(acc);
     return out.flatMap(c => c.length <= 600 ? [c] : c.match(/.{1,500}(\s|$)/g));
   }
+  // Android does not tell us if a voice is male or female. We use name hints when a voice has them;
+  // otherwise two different Arabic voices, plus a lower or higher pitch so the difference is always clear.
+  let vlist = null;
+  const gender = () => store.get('vg') === 'f' ? 'f' : 'm';
+  function choose(list){   // list: [{i, name, lang}] of Arabic voices
+    const g = gender();
+    const text = x => (x.name || '') + ' ' + (x.uri || '');
+    const fem = list.find(x => /female|woman|girl|\bf\b/i.test(text(x)));
+    const mal = list.find(x => /\bmale\b|\bman\b|\bm\b/i.test(text(x)) && !/female/i.test(text(x)));
+    let v = g === 'f' ? fem : mal, hinted = !!v;
+    if (!v && list.length) v = g === 'f' ? list[0] : (list[1] || list[0]);
+    return {voice: v ? v.i : undefined, pitch: hinted ? 1.0 : (g === 'f' ? 1.2 : 0.75)};
+  }
   async function playNative(p, parts, my){
     if (!nativeLang) {
       for (const l of ['ar-SA', 'ar']) {
@@ -221,9 +255,19 @@ const TTS = (() => {
       }
     }
     if (!nativeLang) throw new Error('novoice');
+    if (!vlist) {
+      vlist = [];
+      try {
+        const r = await p.getSupportedVoices();
+        (r.voices || []).forEach((v, i) => { if (/^ar/i.test(v.lang || '')) vlist.push({i, name: v.name, uri: v.voiceURI}); });
+      } catch (e) {}
+    }
+    const {voice, pitch} = choose(vlist);
     for (const t of parts) {
       if (my !== token) return;
-      await p.speak({text: t, lang: nativeLang, rate: 0.85, pitch: 1.0, volume: 1.0});
+      const o = {text: t, lang: nativeLang, rate: 0.8, pitch, volume: 1.0};
+      if (voice !== undefined) o.voice = voice;
+      await p.speak(o);
     }
   }
   function playWeb(parts, my){
@@ -231,14 +275,16 @@ const TTS = (() => {
       const ss = window.speechSynthesis;
       if (!ss || typeof SpeechSynthesisUtterance === 'undefined') return reject(new Error('novoice'));
       const voices = ss.getVoices ? ss.getVoices() : [];
-      const v = voices.find(x => (x.lang || '').toLowerCase().startsWith('ar'));
-      if (voices.length && !v) return reject(new Error('novoice'));
+      const ars = voices.filter(x => (x.lang || '').toLowerCase().startsWith('ar'));
+      if (voices.length && !ars.length) return reject(new Error('novoice'));
+      const ch = choose(ars.map((x, i) => ({i, name: x.name, uri: x.voiceURI})));
+      const v = ch.voice !== undefined ? ars[ch.voice] : undefined;
       ss.cancel();
       let i = 0;
       const next = () => {
         if (my !== token || i >= parts.length) return resolve();
         const u = new SpeechSynthesisUtterance(parts[i++]);
-        u.lang = 'ar-SA'; if (v) u.voice = v; u.rate = 0.85;
+        u.lang = 'ar-SA'; if (v) u.voice = v; u.rate = 0.8; u.pitch = ch.pitch;
         u.onend = next;
         u.onerror = e => (e && (e.error === 'canceled' || e.error === 'interrupted')) ? resolve() : reject(new Error('novoice'));
         ss.speak(u);
@@ -277,20 +323,32 @@ function listenBtn(text){
   b.onclick = () => TTS.toggle(text, set);
   return b;
 }
+// Listen button + male / female choice (remembered)
+function voiceBar(text){
+  const g = store.get('vg') === 'f' ? 'f' : 'm';
+  const seg = el('div',{class:'seg',role:'group'});
+  const mk = (k, label) => {
+    const x = el('button',{class:g === k ? 'on' : '','aria-pressed':g === k ? 'true' : 'false'}, label);
+    x.onclick = () => { store.set('vg', k); TTS.stop(); for (const bt of seg.children) { const on = bt === x; bt.classList.toggle('on', on); bt.setAttribute('aria-pressed', on ? 'true' : 'false'); } };
+    return x;
+  };
+  seg.append(mk('m', L().male), mk('f', L().female));
+  return el('div',{class:'vbar'}, listenBtn(text), seg);
+}
 
-function card(item, book){
+function card(item, book, detail){
   const {text, fb} = pick(item);
   const title = titleOf(book)[lang] || titleOf(book).en;
   const srcText = item.src || `${title} #${item.n}`;
   const full = [item.t.ar || '', text, srcText].filter(Boolean).join('\n\n');
-  const c = el('div',{class:'card'});
+  const c = el('div',{class:'card' + (detail ? ' open' : '')});
   if (item.h) c.append(el('div',{class:'topic'}, item.h[lang] || item.h.en));
   const longAr = (item.t.ar || '').length > LONG_AR, longTr = text.length > LONG_TR;
-  if (item.t.ar) c.append(listenBtn(item.t.ar), el('p',{class:'ar' + (longAr ? ' long' : ''), lang:'ar'}, item.t.ar));
+  if (item.t.ar) c.append(voiceBar(item.t.ar), el('p',{class:'ar' + (longAr ? ' long' : ''), lang:'ar'}, item.t.ar));
   const p = el('p',{class:'tr' + (longTr ? ' long' : '')}, text);
   if (lang === 'ur') { p.dir = 'rtl'; p.style.textAlign = 'right'; }
   c.append(p);
-  if (longAr || longTr) {
+  if (!detail && (longAr || longTr)) {
     const m = el('button',{class:'more'}, L().read);
     m.onclick = () => { const open = c.classList.toggle('open'); m.textContent = open ? L().less : L().read; };
     c.append(m);
@@ -305,6 +363,29 @@ function card(item, book){
   if (fb && L().fb) c.append(el('div',{class:'note'}, L().fb));
   return c;
 }
+
+// List row: a short preview. Tapping it opens the full hadith on its own screen.
+let openItem = null, savedY = 0;
+function rowItem(item, book){
+  const {text} = pick(item);
+  const title = titleOf(book)[lang] || titleOf(book).en;
+  const src = item.h ? (item.h[lang] || item.h.en) : (item.src || `${title} #${item.n}`);
+  let prev = text || item.t.ar || '';
+  if (lang === 'bn') prev = prev.replace(/^.{0,170}?(?:…|\.{3,})\.*\s*/s, '') || prev;   // skip the narrator-chain names at the start
+  const r = el('button',{class:'row'});
+  const body = el('div',{class:'rbody'}, el('p',{class:'rsrc'}, src), el('p',{class:'rprev'}, prev));
+  r.append(el('span',{class:'badge'}, String(item.n)), body);
+  r.insertAdjacentHTML('beforeend', ICON.chev);
+  r.onclick = () => { savedY = window.scrollY; openItem = {item, book}; history.pushState({d:1}, ''); render(); };
+  return r;
+}
+function closeDetail(){ if (!openItem) return; openItem = null; render(true); const y = savedY; requestAnimationFrame(() => window.scrollTo(0, y)); setTimeout(() => window.scrollTo(0, y), 120); }
+function viewDetail(){
+  const back = el('button',{class:'backbtn'}); back.innerHTML = ICON.back; back.append(el('span',{}, L().back));
+  back.onclick = () => history.back();
+  return [el('div',{class:'backbar'}, back), card(openItem.item, openItem.book, true)];
+}
+window.addEventListener('popstate', () => { closeDetail(); });
 
 // Today: 6 hadith a day. The list is shuffled once with a fixed seed and read 6 at a time by date,
 // so every day shows a new set and a hadith comes back only after the whole list has been shown.
@@ -334,7 +415,7 @@ function viewToday(){
   let dateStr = '';
   try { dateStr = d.toLocaleDateString(LANGS[lang][2], {weekday:'long', day:'numeric', month:'long', year:'numeric'}); } catch (e) { dateStr = d.toDateString(); }
   const cards = [];
-  for (let i = 0; i < 6; i++) { const [b, it] = pool[(day * 6 + i) % pool.length]; cards.push(card(it, b)); }
+  for (let i = 0; i < 6; i++) { const [b, it] = pool[(day * 6 + i) % pool.length]; cards.push(rowItem(it, b)); }
   return [el('h2',{class:'page'}, L().today), el('p',{class:'sub'}, `${dateStr} · ${L().daily}`), ...cards];
 }
 
@@ -370,11 +451,11 @@ function viewLib(){
         hits = keys.filter(k => k === needle || (normCache[coll][k] ??= normAr(ar[k])).includes(nAr) || (tr[k]||'').toLowerCase().includes(needle));
       }
       total = hits.length;
-      cards = hits.slice(0, limit).map(k => { const t = {ar:ar[k]}; if (en[k]) t.en = en[k]; if (tr[k]) t[bl] = tr[k]; return card({n:k, t, src:`${titleOf(coll).en} #${k}`}, coll); });
+      cards = hits.slice(0, limit).map(k => { const t = {ar:ar[k]}; if (en[k]) t.en = en[k]; if (tr[k]) t[bl] = tr[k]; return rowItem({n:k, t, src:`${titleOf(coll).en} #${k}`}, coll); });
     } else {
       const r = DATA[coll].items.filter(it => !needle || String(it.n)===needle || (it.h && Object.values(it.h).some(x => x.toLowerCase().includes(needle))) || Object.values(it.t).some(t => t.toLowerCase().includes(needle)));
       total = r.length;
-      cards = r.slice(0, limit).map(it => card(it, coll));
+      cards = r.slice(0, limit).map(it => rowItem(it, coll));
     }
     list.replaceChildren(...(cards.length ? cards : [el('div',{class:'card'}, L().none)]));
     info.textContent = total ? `${Math.min(limit,total)} / ${total}` : '';
@@ -401,7 +482,7 @@ function viewTas(){
   tap.onclick = () => { const v=(+(store.get(key)||0))+1; store.set(key,v); num.textContent=v; setBar(v); if (navigator.vibrate) navigator.vibrate(v%target===0 ? 150 : 15); };
   const rs = el('button',{class:'btn',style:'margin-top:16px;min-width:150px'}, L().reset);
   rs.onclick = () => { store.set(key,0); num.textContent='0'; setBar(0); };
-  const lb = listenBtn(ar); lb.style.margin = '0 auto 6px';
+  const lb = voiceBar(ar);
   wrap.append(chips, lb, el('p',{class:'big',lang:'ar'}, ar), el('div',{class:'sub',style:'margin:0'}, `${L().count} / ${target}`), num, bar, tap, el('div'), rs);
   return [wrap];
 }
@@ -409,7 +490,7 @@ function viewTas(){
 function viewAbout(){
   const c = el('div',{class:'card about'});
   const tile = el('div',{class:'tile'}); tile.innerHTML = LOGO;
-  c.append(tile, el('h2',{}, L().aboutH), el('div',{class:'small'}, L().ver), el('p',{}, L().aboutT), el('p',{class:'small'}, L().aboutD));
+  c.append(tile, el('h2',{}, L().aboutH), el('div',{class:'small'}, L().ver), el('p',{}, L().aboutT));
   return [c];
 }
 
@@ -422,10 +503,10 @@ function render(keepScroll){
   $('#nav').replaceChildren(...[['today','home'],['lib','lib'],['tas','tas'],['about','about']].map(([t,ic]) => {
     const b = el('button',{class:t===tab?'on':'','aria-label':L()[t === 'today' ? 'home' : t]});
     b.innerHTML = ICON[ic]; b.append(el('span',{}, L()[t === 'today' ? 'home' : t]));
-    b.onclick = () => { if (DATA.nawawi) { tab = t; render(); } };
+    b.onclick = () => { if (DATA.nawawi) { if (openItem) { openItem = null; history.back(); } tab = t; render(); } };
     return b;
   }));
-  const v = {today:viewToday, lib:viewLib, tas:viewTas, about:viewAbout}[tab]();
+  const v = openItem ? viewDetail() : {today:viewToday, lib:viewLib, tas:viewTas, about:viewAbout}[tab]();
   $('#view').replaceChildren(...v);
   if (!keepScroll) window.scrollTo(0, 0);
 }
