@@ -68,6 +68,10 @@ input[type=search]{width:100%;height:48px;padding:0 14px;border-radius:12px;bord
 .about h2{margin:8px 0 2px}
 .about p{margin:8px 0;text-align:left}
 .about .small{font-size:12.5px;color:var(--mute)}
+.listen{display:flex;width:max-content;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--line);background:var(--chip);color:var(--accent);font-size:14px;font-weight:600;margin:0 0 8px}
+.listen svg{width:20px;height:20px;flex:none}
+.listen.on{background:var(--gold);color:#111;border-color:var(--gold)}
+.toast{display:none;position:fixed;left:16px;right:16px;bottom:calc(76px + env(safe-area-inset-bottom));background:#1c2a24;color:#fff;padding:12px 14px;border-radius:12px;font-size:14px;line-height:1.5;z-index:20;box-shadow:0 6px 20px rgba(0,0,0,.3)}
 </style>
 </head>
 <body>
@@ -113,6 +117,17 @@ const UI = {
   aboutT:"Les hadiths de cette application proviennent de données open source et chacun indique sa source. Vérifiez toute action ou mérite auprès de savants ou de recueils fiables. Les traductions peuvent comporter des erreurs.",aboutD:'Données : fawazahmed0/hadith-api (open source). Police arabe : Amiri (SIL OFL).'}
 };
 
+const UX = {
+ bn:{listen:'শুনুন',stop:'থামান',noVoice:'আপনার ফোনে আরবি ভয়েস নেই। ফোনের সেটিংস › ভাষা ও ইনপুট › টেক্সট-টু-স্পিচ থেকে আরবি ভয়েস ডাউনলোড করুন।',daily:'প্রতিদিন নতুন ৬টি হাদিস'},
+ en:{listen:'Listen',stop:'Stop',noVoice:'No Arabic voice found on this phone. Install one in Settings › Language & input › Text-to-speech.',daily:'6 new hadith every day'},
+ hi:{listen:'सुनें',stop:'रोकें',noVoice:'आपके फ़ोन में अरबी आवाज़ नहीं है। सेटिंग्स › भाषा और इनपुट › टेक्स्ट-टू-स्पीच से अरबी आवाज़ डाउनलोड करें।',daily:'हर दिन 6 नई हदीस'},
+ ne:{listen:'सुन्नुहोस्',stop:'रोक्नुहोस्',noVoice:'तपाईंको फोनमा अरबी आवाज छैन। सेटिङ › भाषा र इनपुट › टेक्स्ट-टु-स्पिचबाट अरबी आवाज डाउनलोड गर्नुहोस्।',daily:'हरेक दिन ६ नयाँ हदीस'},
+ ur:{listen:'سنیں',stop:'روکیں',noVoice:'آپ کے فون میں عربی آواز موجود نہیں۔ سیٹنگز › زبان اور ان پٹ › ٹیکسٹ ٹو اسپیچ سے عربی آواز ڈاؤن لوڈ کریں۔',daily:'ہر روز 6 نئی احادیث'},
+ tr:{listen:'Dinle',stop:'Durdur',noVoice:'Telefonunuzda Arapça ses yok. Ayarlar › Dil ve giriş › Metin okuma bölümünden Arapça ses indirin.',daily:'Her gün 6 yeni hadis'},
+ fr:{listen:'Écouter',stop:'Arrêter',noVoice:'Aucune voix arabe sur ce téléphone. Installez-en une dans Paramètres › Langue et saisie › Synthèse vocale.',daily:'6 nouveaux hadiths chaque jour'}
+};
+for (const l of Object.keys(UX)) Object.assign(UI[l], UX[l]);
+
 const ADHKAR = [
  ['سُبْحَانَ اللّٰهِ',33],['الْحَمْدُ لِلّٰهِ',33],['اللّٰهُ أَكْبَرُ',34],
  ['لَا إِلٰهَ إِلَّا اللّٰهُ',100],['أَسْتَغْفِرُ اللّٰهَ',100],['لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللّٰهِ',100]
@@ -129,13 +144,16 @@ const ICON = {
  share:`<svg viewBox="0 0 24 24" ${S}><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/></svg>`,
  next:`<svg viewBox="0 0 24 24" ${S}><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.5"/><path d="M20 4v4.5h-4.5"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 15.5"/><path d="M4 20v-4.5h4.5"/></svg>`
 };
+ICON.play = `<svg viewBox="0 0 24 24" ${S}><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>`;
+ICON.stop = `<svg viewBox="0 0 24 24" ${S}><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg>`;
 const LOGO = `<svg viewBox="0 0 1024 1024" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0CE7A"/><stop offset="1" stop-color="#D9AB4A"/></linearGradient><mask id="lm"><rect width="1024" height="1024" fill="#fff"/><circle cx="562" cy="476" r="118" fill="#000"/></mask></defs><g fill="#D9AB4A" fill-opacity=".10" stroke="url(#lg)" stroke-width="30" stroke-linejoin="round"><rect x="292" y="292" width="440" height="440"/><rect x="292" y="292" width="440" height="440" transform="rotate(45 512 512)"/></g><circle cx="500" cy="520" r="140" fill="url(#lg)" mask="url(#lm)"/><polygon points="614.0,406.0 625.2,436.6 657.7,437.8 632.1,457.9 641.0,489.2 614.0,471.0 587.0,489.2 595.9,457.9 570.3,437.8 602.8,436.6" fill="url(#lg)"/></svg>`;
 
 const $ = s => document.querySelector(s);
 let lang = 'bn';
 try { lang = localStorage.getItem('lang') || 'bn'; } catch (e) {}
 if (!UI[lang]) lang = 'bn';
-let tab = 'today', coll = 'nawawi', q = '', limit = PAGE, libToken = 0, todayShift = 0;
+let tab = 'today', coll = 'nawawi', q = '', limit = PAGE, libToken = 0;
+let DAILY = [], shownDay = null;
 const L = () => UI[lang];
 const store = {get:k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set:(k,v) => { try { localStorage.setItem(k,v); } catch (e) {} }};
 const titleOf = b => (DATA[b] || BIG[b]).title;
@@ -168,6 +186,98 @@ async function copyText(txt, btn){
   try { await navigator.clipboard.writeText(txt); if (btn) { btn.setAttribute('aria-label', L().copied); btn.style.color = 'var(--goldtxt)'; setTimeout(() => { btn.style.color = ''; btn.setAttribute('aria-label', L().copy); }, 1200); } } catch (e) {}
 }
 
+// ---- Arabic voice: the phone's own text-to-speech (Capacitor plugin) first, the browser voice as a fallback ----
+let toastEl = null, toastT = 0;
+function toast(msg){
+  if (!toastEl) { toastEl = el('div',{class:'toast',role:'status'}); document.body.append(toastEl); }
+  toastEl.textContent = msg; toastEl.style.display = 'block';
+  clearTimeout(toastT); toastT = setTimeout(() => { toastEl.style.display = 'none'; }, 6000);
+}
+const TTS = (() => {
+  let token = 0, cur = null, nativeLang = null;
+  const plugin = () => {
+    try {
+      const cap = window.Capacitor;
+      if (cap && cap.Plugins && cap.Plugins.TextToSpeech) return cap.Plugins.TextToSpeech;
+      if (cap && cap.isNativePlatform && cap.isNativePlatform() && cap.registerPlugin) return cap.registerPlugin('TextToSpeech');
+    } catch (e) {}
+    return null;
+  };
+  // Android limits one utterance to about 4000 characters, so read sentence by sentence.
+  function chunks(text){
+    const clean = text.replace(/[‎‏]/g, '').replace(/\s+/g, ' ').trim();
+    const parts = clean.split(/(?<=[،؛.؟!:])\s+/), out = [];
+    let acc = '';
+    for (const p of parts) {
+      if ((acc + ' ' + p).length > 320 && acc) { out.push(acc); acc = p; } else acc = acc ? acc + ' ' + p : p;
+    }
+    if (acc) out.push(acc);
+    return out.flatMap(c => c.length <= 600 ? [c] : c.match(/.{1,500}(\s|$)/g));
+  }
+  async function playNative(p, parts, my){
+    if (!nativeLang) {
+      for (const l of ['ar-SA', 'ar']) {
+        try { const r = await p.isLanguageSupported({lang: l}); if (r && r.supported) { nativeLang = l; break; } } catch (e) {}
+      }
+    }
+    if (!nativeLang) throw new Error('novoice');
+    for (const t of parts) {
+      if (my !== token) return;
+      await p.speak({text: t, lang: nativeLang, rate: 0.85, pitch: 1.0, volume: 1.0});
+    }
+  }
+  function playWeb(parts, my){
+    return new Promise((resolve, reject) => {
+      const ss = window.speechSynthesis;
+      if (!ss || typeof SpeechSynthesisUtterance === 'undefined') return reject(new Error('novoice'));
+      const voices = ss.getVoices ? ss.getVoices() : [];
+      const v = voices.find(x => (x.lang || '').toLowerCase().startsWith('ar'));
+      if (voices.length && !v) return reject(new Error('novoice'));
+      ss.cancel();
+      let i = 0;
+      const next = () => {
+        if (my !== token || i >= parts.length) return resolve();
+        const u = new SpeechSynthesisUtterance(parts[i++]);
+        u.lang = 'ar-SA'; if (v) u.voice = v; u.rate = 0.85;
+        u.onend = next;
+        u.onerror = e => (e && (e.error === 'canceled' || e.error === 'interrupted')) ? resolve() : reject(new Error('novoice'));
+        ss.speak(u);
+      };
+      next();
+    });
+  }
+  function stop(){
+    token++;
+    if (cur) { cur.set(false); cur = null; }
+    try { const p = plugin(); if (p) p.stop(); } catch (e) {}
+    try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
+  }
+  async function toggle(text, set){
+    if (cur && cur.text === text && cur.set === set) { stop(); return; }
+    stop();
+    const my = ++token; cur = {text, set}; set(true);
+    try {
+      const p = plugin(), parts = chunks(text);
+      if (p) await playNative(p, parts, my); else await playWeb(parts, my);
+    } catch (e) { if (my === token) toast(L().noVoice); }
+    if (my === token) { set(false); cur = null; }
+  }
+  return {toggle, stop};
+})();
+
+function listenBtn(text){
+  const b = el('button',{class:'listen'});
+  const set = on => {
+    b.classList.toggle('on', on);
+    b.innerHTML = (on ? ICON.stop : ICON.play) + '<span></span>';
+    b.lastChild.textContent = on ? L().stop : L().listen;
+    b.setAttribute('aria-label', on ? L().stop : L().listen);
+  };
+  set(false);
+  b.onclick = () => TTS.toggle(text, set);
+  return b;
+}
+
 function card(item, book){
   const {text, fb} = pick(item);
   const title = titleOf(book)[lang] || titleOf(book).en;
@@ -176,7 +286,7 @@ function card(item, book){
   const c = el('div',{class:'card'});
   if (item.h) c.append(el('div',{class:'topic'}, item.h[lang] || item.h.en));
   const longAr = (item.t.ar || '').length > LONG_AR, longTr = text.length > LONG_TR;
-  if (item.t.ar) c.append(el('p',{class:'ar' + (longAr ? ' long' : ''), lang:'ar'}, item.t.ar));
+  if (item.t.ar) c.append(listenBtn(item.t.ar), el('p',{class:'ar' + (longAr ? ' long' : ''), lang:'ar'}, item.t.ar));
   const p = el('p',{class:'tr' + (longTr ? ' long' : '')}, text);
   if (lang === 'ur') { p.dir = 'rtl'; p.style.textAlign = 'right'; }
   c.append(p);
@@ -196,24 +306,36 @@ function card(item, book){
   return c;
 }
 
-// Today: short hadith only, so the home screen never turns into a wall of text.
-function shortPool(){
+// Today: 6 hadith a day. The list is shuffled once with a fixed seed and read 6 at a time by date,
+// so every day shows a new set and a hadith comes back only after the whole list has been shown.
+function seededShuffle(arr, seed){
+  const a = arr.slice(); let t0 = seed >>> 0;
+  const rnd = () => { t0 = (t0 + 0x6D2B79F5) >>> 0; let t = t0; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+function dayNumber(){ const d = new Date(); return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 864e5); }
+function todayPool(){
   const all = [], mine = [];   // mine = has a real translation in the chosen language
+  const add = (b, it) => { all.push([b, it]); if (it.t[lang]) mine.push([b, it]); };
   for (const b of Object.keys(DATA)) for (const it of DATA[b].items) {
     const tr = pick(it).text;
-    if ((it.t.ar || '').length <= 340 && tr.length > 0 && tr.length <= 460) { all.push([b, it]); if (it.t[lang]) mine.push([b, it]); }
+    if ((it.t.ar || '').length <= 340 && tr.length > 0 && tr.length <= 460) add(b, it);
   }
-  return mine.length >= 5 ? mine : all;
+  for (const x of DAILY) {
+    const t = {ar: x.ar, en: x.en}; if (x.bn) t.bn = x.bn;
+    add(x.b, {n: x.n, t, src: `${BIG[x.b].title.en} #${x.n}`});
+  }
+  return seededShuffle(mine.length >= 60 ? mine : all, 20261120);
 }
 function viewToday(){
-  const pool = shortPool();
-  const d = new Date(); const day = Math.floor((d - new Date(d.getFullYear(),0,0))/864e5);
-  const [b, it] = pool[(day + todayShift) % pool.length];
+  const pool = todayPool(), day = dayNumber(); shownDay = day;
+  const d = new Date();
   let dateStr = '';
   try { dateStr = d.toLocaleDateString(LANGS[lang][2], {weekday:'long', day:'numeric', month:'long', year:'numeric'}); } catch (e) { dateStr = d.toDateString(); }
-  const next = el('button',{class:'btn full'}, L().next);
-  next.onclick = () => { todayShift++; render(true); };
-  return [el('h2',{class:'page'}, L().today), el('p',{class:'sub'}, dateStr), card(it, b), next];
+  const cards = [];
+  for (let i = 0; i < 6; i++) { const [b, it] = pool[(day * 6 + i) % pool.length]; cards.push(card(it, b)); }
+  return [el('h2',{class:'page'}, L().today), el('p',{class:'sub'}, `${dateStr} · ${L().daily}`), ...cards];
 }
 
 function viewLib(){
@@ -279,7 +401,8 @@ function viewTas(){
   tap.onclick = () => { const v=(+(store.get(key)||0))+1; store.set(key,v); num.textContent=v; setBar(v); if (navigator.vibrate) navigator.vibrate(v%target===0 ? 150 : 15); };
   const rs = el('button',{class:'btn',style:'margin-top:16px;min-width:150px'}, L().reset);
   rs.onclick = () => { store.set(key,0); num.textContent='0'; setBar(0); };
-  wrap.append(chips, el('p',{class:'big',lang:'ar'}, ar), el('div',{class:'sub',style:'margin:0'}, `${L().count} / ${target}`), num, bar, tap, el('div'), rs);
+  const lb = listenBtn(ar); lb.style.margin = '0 auto 6px';
+  wrap.append(chips, lb, el('p',{class:'big',lang:'ar'}, ar), el('div',{class:'sub',style:'margin:0'}, `${L().count} / ${target}`), num, bar, tap, el('div'), rs);
   return [wrap];
 }
 
@@ -291,6 +414,7 @@ function viewAbout(){
 }
 
 function render(keepScroll){
+  TTS.stop();
   document.documentElement.lang = lang;
   document.documentElement.dir = LANGS[lang][1];
   $('#brand').innerHTML = LOGO;
@@ -313,8 +437,16 @@ sel.onchange = () => { lang = sel.value; store.set('lang',lang); if (DATA.nawawi
 
 $('#brand').innerHTML = LOGO; $('#brand').append(el('h1',{}, L().app));
 $('#view').replaceChildren(el('div',{class:'card'}, L().loading));
-fetch('data/hadith.json').then(r => r.json()).then(d => { DATA = d; render(); })
+Promise.all([
+  fetch('data/hadith.json').then(r => r.json()),
+  fetch('data/daily.json').then(r => r.ok ? r.json() : []).catch(() => [])
+]).then(([d, daily]) => { DATA = d; DAILY = daily; render(); })
   .catch(() => $('#view').replaceChildren(el('div',{class:'card'}, L().err)));
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) TTS.stop();
+  else if (tab === 'today' && DATA.nawawi && dayNumber() !== shownDay) render(true);   // a new day began while the app was closed
+});
 </script>
 </body>
 </html>
