@@ -239,14 +239,15 @@ const TTS = (() => {
   // otherwise two different Arabic voices, plus a lower or higher pitch so the difference is always clear.
   let vlist = null;
   const gender = () => store.get('vg') === 'f' ? 'f' : 'm';
-  function choose(list){   // list: [{i, name, lang}] of Arabic voices
+  function choose(list){   // list: [{i, name, uri}] of Arabic voices
     const g = gender();
-    const text = x => (x.name || '') + ' ' + (x.uri || '');
-    const fem = list.find(x => /female|woman|girl|\bf\b/i.test(text(x)));
-    const mal = list.find(x => /\bmale\b|\bman\b|\bm\b/i.test(text(x)) && !/female/i.test(text(x)));
-    let v = g === 'f' ? fem : mal, hinted = !!v;
-    if (!v && list.length) v = g === 'f' ? list[0] : (list[1] || list[0]);
-    return {voice: v ? v.i : undefined, pitch: hinted ? 1.0 : (g === 'f' ? 1.2 : 0.75)};
+    const text = x => ((x.name || '') + ' ' + (x.uri || '')).toLowerCase();
+    // Google Arabic voice codes: arb / arc are the lower (male) voices, ara / ard the female ones.
+    const isF = x => /female|woman|girl|-x-ar[ad]\b|-x-ar[ad]-/.test(text(x));
+    const isM = x => !/female/.test(text(x)) && (/\bmale\b|\bman\b|-x-ar[bc]\b|-x-ar[bc]-/.test(text(x)));
+    let v = list.find(g === 'f' ? isF : isM), hinted = !!v;
+    if (!v && list.length) v = g === 'f' ? list.find(x => !isM(x)) || list[0] : list.find(x => !isF(x)) || list[list.length - 1];
+    return {voice: v ? v.i : undefined, pitch: g === 'f' ? (hinted ? 1.0 : 1.2) : (hinted ? 0.8 : 0.55)};
   }
   async function playNative(p, parts, my){
     if (!nativeLang) {
